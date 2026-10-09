@@ -941,6 +941,31 @@ const RECETAS = [
     con: 'Sirve de postre o de merienda en un día caluroso.',
   },
 
+  {
+    id: 'shortcake-fresa-proteico', o: 'fb', vu: 'https://www.facebook.com/reel/974474235674360', de: 'J.Newtrition (receta original de Mia Carson)', ingles: true,
+    n: 'Postre de fresa tipo shortcake alto en proteína', e: '🍓',
+    m: ['postre', 'desayuno'], p: 'lacteo', a: [], t: 5, d: 'Fácil', kcal: 210, prot: 25,
+    ing: [
+      [4, 'taza', 'yogur griego natural sin grasa', 'lac'],
+      [6, 'cda', 'pudín instantáneo de vainilla sin azúcar, en polvo', 'gra'],
+      [2, 'cda', 'stevia granulada (o al gusto)', 'sal'],
+      [1, 'taza', 'fresas liofilizadas (si no las consigues: 1 taza más de fresas frescas picadas)', 'otr'],
+      [1, 'cdta', 'esencia de vainilla', 'sal'],
+      [0.5, 'taza', 'fresas frescas picadas', 'ver'],
+      [8, 'u', 'galleta de vainilla (tipo wafer)|galletas de vainilla (tipo wafer)', 'gra'],
+    ],
+    pasos: [
+      'En un tazón mezcla el yogur griego con el pudín en polvo, la stevia, las fresas liofilizadas y la vainilla. Si no tienes fresas liofilizadas, usa 1 taza de fresas frescas y 1 cucharada más de pudín para que espese.',
+      'Desmenuza las galletas de vainilla con la mano y mézclalas con el yogur. Así hacen el papel del bizcocho del shortcake.',
+      'Incorpora con cuidado las fresas frescas picadas, sin revolver demasiado.',
+      'Sírvelo de una vez en vasos o tazones. Si lo dejas 15 minutos en la nevera, queda más firme.',
+    ],
+    liv: 'Es una porción de solo 210 calorías: úsala de postre en lugar de algo dulce con azúcar. Con menos galletas baja todavía más.',
+    mus: 'Dos porciones: unos 50 g de proteína, con un vaso de leche o proteína en polvo en el yogur.',
+    adel: 'Se prepara en 5 minutos. Se puede dejar hecha la mezcla de yogur y pudín desde la noche anterior; las galletas y las fresas frescas van al momento para que no se ablanden.',
+    con: 'Fruta o un café. Sirve de postre o de merienda cuando antoje algo dulce.',
+  },
+
   // ───────────── Salsas y aderezos (no pican) ─────────────
   // Cantidades para 4 porciones; una porción son unas 3 o 4 cucharadas.
   {
