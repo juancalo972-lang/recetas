@@ -918,6 +918,29 @@ const RECETAS = [
     con: 'No necesita nada más. Si no consigues proteína en polvo, quítala: el yogur griego solo ya aporta proteína.',
   },
 
+  {
+    id: 'batido-sandia', o: 'fb', vu: 'https://www.cheffatty.com/recipes/watermelon-milkshake', de: 'Chef Fatty (Charles Kim)', ingles: true,
+    n: 'Batido cremoso de sandía y limón', e: '🍉',
+    m: ['postre'], p: 'lacteo', a: ['licuadora'], t: 10, reposo: 'congelar la sandía desde la noche anterior', d: 'Fácil', kcal: 230, prot: 5,
+    ing: [
+      [8, 'taza', 'sandía en cubos, congelada (desde la noche anterior)', 'ver'],
+      [5, 'cda', 'leche condensada', 'otr'],
+      [0.5, 'taza', 'leche entera (la receta original usa mitad leche, mitad crema de leche)', 'lac'],
+      [1, 'u', 'limón Tahití|limones Tahití', 'ver'],
+      [null, 'gusto', 'pizca de sal', 'bas'],
+    ],
+    pasos: [
+      'La noche anterior pica la sandía en cubos, sin cáscara, y congélala bien (mejor sobre una bandeja y luego en una bolsa, para que no se pegue).',
+      'En la licuadora echa la sandía congelada, la leche condensada, la leche, el jugo del limón y una pizca de sal.',
+      'Licúa hasta que quede espeso y liso, como un batido de helado. Si está tan espeso que no se mueve, agrega un chorrito de leche y licúa otra vez.',
+      'Sírvelo bien frío en vasos altos. Si quieres, una rodaja de limón en el borde.',
+    ],
+    liv: 'Cambia la leche condensada por 1 taza de yogur griego natural y 2 cucharadas de stevia o miel: baja a unas 130 calorías y sube la proteína.',
+    mus: 'Con 1 taza de yogur griego y 1 medida de proteína en polvo en vez de la leche condensada: unos 25 g de proteína por vaso.',
+    adel: 'La sandía se congela con hasta 1 semana de anticipación; el batido se hace al momento.',
+    con: 'Sirve de postre o de merienda en un día caluroso.',
+  },
+
   // ───────────── Salsas y aderezos (no pican) ─────────────
   // Cantidades para 4 porciones; una porción son unas 3 o 4 cucharadas.
   {
