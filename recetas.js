@@ -673,6 +673,33 @@ const RECETAS = [
     con: 'Unas fresas o una cucharada de yogur griego encima.',
   },
 
+  {
+    id: 'cheesecake-chocolate-proteico', o: 'fb', vu: 'https://www.facebook.com/share/r/19fCgCBAUD/', de: 'theChefoutWest', ingles: true, foto: 'fotos/cheesecake-chocolate.jpg',
+    n: 'Cheesecake de chocolate alto en proteína', e: '🍫',
+    m: ['postre', 'desayuno'], p: 'lacteo', a: ['horno', 'licuadora'], t: 15, reposo: 'mínimo 8 horas en la nevera (mejor toda la noche)', d: 'Fácil', kcal: 300, prot: 19,
+    ing: [
+      [1, 'taza', 'queso cottage (o requesón)', 'lac'],
+      [1, 'taza', 'yogur griego natural sin azúcar', 'lac'],
+      [2, 'u', 'huevo|huevos', 'lac'],
+      [0.5, 'taza', 'cacao en polvo sin azúcar', 'sal'],
+      [0.5, 'taza', 'miel de abejas (o miel de maple)', 'sal'],
+      [0.5, 'taza', 'harina de avena (o de almendras)', 'gra'],
+      [2, 'cdta', 'esencia de vainilla', 'sal'],
+    ],
+    pasos: [
+      'Prende el horno a 165 °C. Forra con papel de hornear un molde redondo pequeño (unos 15 cm).',
+      'Echa todo en la licuadora: el queso cottage, el yogur, los huevos, el cacao, la miel, la harina de avena y la vainilla. Licúa hasta que quede completamente liso, raspando los lados si hace falta.',
+      'Vierte la mezcla en el molde y alisa la superficie.',
+      'Hornea de 45 a 50 minutos. Los bordes deben quedar firmes y el centro todavía blandito, que tiemble un poco. Se ve medio crudo en el medio y es lo correcto.',
+      'Déjalo enfriar y llévalo a la nevera mínimo 8 horas, mejor toda la noche. Ahí el centro se endurece y queda cremoso, tipo fudge.',
+      'Córtalo en 4 porciones y sírvelo frío.',
+    ],
+    liv: 'Un cuarto del cheesecake por persona, o hasta la mitad de una porción con una fruta. Si lo haces con menos miel (unas 4 cucharadas) queda menos dulce y más liviano.',
+    mus: 'Una porción grande (la mitad del cheesecake) tiene unos 40 g de proteína. Sirve de desayuno o después del gimnasio.',
+    adel: 'Se prepara la noche anterior y dura 4 o 5 días tapado en la nevera. Puedes dejar listos varios desayunos o postres de una vez.',
+    con: 'Unas fresas o frambuesas encima, o un poquito de yogur griego.',
+  },
+
   // ───────────── Salsas y aderezos (no pican) ─────────────
   // Cantidades para 4 porciones; una porción son unas 3 o 4 cucharadas.
   {
