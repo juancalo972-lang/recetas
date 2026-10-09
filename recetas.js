@@ -883,6 +883,41 @@ const RECETAS = [
     con: 'Fresas o frambuesas encima. Necesita proteína en polvo para el relleno: sin ella no queda igual de firme. No se siente el sabor a frijol.',
   },
 
+  {
+    id: 'avena-tiramisu', o: 'fb', vu: 'https://www.facebook.com/watch/?v=1581203993549943', ingles: true, foto: 'fotos/avena-tiramisu.jpg',
+    n: 'Avena de la noche anterior sabor tiramisú', e: '☕',
+    m: ['desayuno', 'postre'], p: 'lacteo', a: [], t: 10, reposo: 'toda la noche en la nevera (mínimo 8 horas)', d: 'Fácil', kcal: 458, prot: 33,
+    ing: [
+      ['Avena'],
+      [2, 'taza', 'avena en hojuelas', 'gra'],
+      [6, 'cda', 'cacao en polvo sin azúcar', 'sal'],
+      [3, 'cda', 'semillas de chía', 'gra'],
+      [2, 'cdta', 'esencia de vainilla', 'sal'],
+      [null, 'gusto', 'pizca de sal', 'bas'],
+      [6, 'cda', 'café tinto fuerte (o espresso), ya frío', 'sal'],
+      [2.5, 'taza', 'leche de almendras entera (o leche normal)', 'lac'],
+      [4, 'cda', 'miel de abejas', 'sal'],
+      ['Cubierta de yogur con proteína'],
+      [3, 'taza', 'yogur griego natural sabor vainilla (o natural con 1 cdta de vainilla)', 'lac'],
+      [60, 'g', 'proteína en polvo sabor vainilla', 'otr'],
+      [1, 'cda', 'miel de abejas', 'sal'],
+      [0.5, 'cdta', 'esencia de vainilla', 'sal'],
+      [null, 'gusto', 'un poco más de cacao para espolvorear', 'sal'],
+    ],
+    pasos: [
+      'Prepara el café fuerte y déjalo enfriar por completo.',
+      'En un tazón mezcla en seco la avena, el cacao, la chía y una pizca de sal.',
+      'Agrega el café frío, la leche de almendras, la miel y la vainilla. Mezcla bien y pasa a un recipiente de vidrio con tapa (o a 4 frascos).',
+      'Cubierta: bate el yogur griego con la proteína en polvo, la miel y la vainilla hasta que quede lisa.',
+      'Extiende la cubierta sobre la avena y espolvorea cacao por encima, pasándolo por un colador para que quede fino, como un tiramisú.',
+      'Tapa y deja en la nevera mínimo 8 horas, mejor toda la noche. Amanece listo.',
+    ],
+    liv: 'Es una porción de unas 458 calorías: si quieres bajarla, usa media porción de avena y la cubierta solo con yogur (sin miel extra).',
+    mus: 'La porción completa: 33 g de proteína y 10 g de fibra, de desayuno antes del gimnasio.',
+    adel: 'Se prepara la noche anterior y dura 3 días en la nevera: puedes dejar varios desayunos listos.',
+    con: 'No necesita nada más. Si no consigues proteína en polvo, quítala: el yogur griego solo ya aporta proteína.',
+  },
+
   // ───────────── Salsas y aderezos (no pican) ─────────────
   // Cantidades para 4 porciones; una porción son unas 3 o 4 cucharadas.
   {
