@@ -579,6 +579,43 @@ const RECETAS = [
     con: 'Un café o una fruta. También sirve de postre o de algo para el antojo.',
   },
 
+  {
+    id: 'pancakes-pie-limon', o: 'fb', vu: 'https://www.facebook.com/watch/?v=1569074414527561', de: 'Alejandro Méndez García', foto: 'fotos/pancakes-pie-limon.jpg',
+    n: 'Pancakes de avena sabor pie de limón', e: '🥞',
+    m: ['desayuno', 'postre'], p: 'huevo', a: ['estufa'], t: 25, d: 'Fácil', kcal: 330, prot: 19,
+    ing: [
+      [4, 'u', 'huevo|huevos', 'lac'],
+      [2, 'cda', 'mantequilla derretida (o ghee, o aceite de coco)', 'lac'],
+      [1, 'cdta', 'esencia de vainilla', 'sal'],
+      [2, 'cda', 'stevia granulada (o al gusto)', 'sal'],
+      [null, 'gusto', 'pizca de sal gruesa', 'bas'],
+      [3, 'u', 'limón Tahití|limones Tahití', 'ver'],
+      [2, 'taza', 'harina de avena (o avena en hojuelas licuada)', 'gra'],
+      [1, 'taza', 'leche descremada o deslactosada', 'lac'],
+      [2, 'cdta', 'polvo de hornear', 'gra'],
+      ['Crema de limón'],
+      [1, 'taza', 'yogur griego natural sin azúcar', 'lac'],
+      [0.5, 'cdta', 'esencia de vainilla', 'sal'],
+      [1, 'cda', 'stevia granulada (o al gusto)', 'sal'],
+      ['Para decorar (opcional)'],
+      [null, 'gusto', 'avena tostada o galleta triturada (opcional)', 'gra'],
+    ],
+    pasos: [
+      'En un tazón bate los huevos hasta que hagan burbujas.',
+      'Agrega la mantequilla derretida (o ghee, o aceite de coco), la vainilla, la stevia y una pizca de sal gruesa.',
+      'Exprime el jugo de un limón en la mezcla. Guarda otro limón para la crema y el tercero para decorar.',
+      'Agrega la harina de avena y mezcla; luego la leche. Debe quedar espesa pero que caiga de la cuchara. Si no tienes harina de avena, licúa avena en hojuelas hasta que quede como harina.',
+      'Por último agrega el polvo de hornear y la ralladura de un limón, y mezcla hasta que no queden grumos.',
+      'Crema: mezcla el yogur griego con la vainilla, la stevia y el jugo del segundo limón. Métela a la nevera mientras haces los pancakes.',
+      'El secreto es el fuego: sartén antiadherente a fuego medio-bajo. Echa un cucharón de mezcla y tapa. Cuando salgan burbujitas encima, voltéalo y deja 1 o 2 minutos más.',
+      'Arma una torre: pancake, crema, pancake, crema. Termina con crema, ralladura de limón y rodajas de limón encima.',
+    ],
+    liv: 'Dos pancakes por persona (no la torre entera) con la crema de yogur, y sin mantequilla extra en la sartén: con sartén antiadherente no hace falta.',
+    mus: 'La torre de 4 pancakes con bastante crema de yogur griego. Para más proteína, una clara de huevo más en la mezcla.',
+    adel: 'La crema se puede dejar lista la noche anterior. Los pancakes duran 3 días en la nevera y se calientan en la sartén o en la freidora (160 °C, 3 minutos).',
+    con: 'Un café o una fruta. Con la crema y el limón sabe a pie de limón: también sirve de postre.',
+  },
+
   // ───────────── Salsas y aderezos (no pican) ─────────────
   // Cantidades para 4 porciones; una porción son unas 3 o 4 cucharadas.
   {
