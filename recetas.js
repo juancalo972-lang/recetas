@@ -616,6 +616,37 @@ const RECETAS = [
     con: 'Un café o una fruta. Con la crema y el limón sabe a pie de limón: también sirve de postre.',
   },
 
+  {
+    id: 'avena-chocotorta', o: 'fb', vu: 'https://www.facebook.com/watch/?v=1714383666437769', de: 'Pau Moguilevsky (pulicocina)', foto: 'fotos/avena-chocotorta.jpg',
+    n: 'Avena horneada chocotorta con arequipe', e: '🍰',
+    m: ['desayuno', 'postre'], p: 'lacteo', a: ['horno|freidora'], t: 45, d: 'Fácil', kcal: 290, prot: 12,
+    ing: [
+      [2, 'u', 'banano maduro|bananos maduros', 'ver'],
+      [2, 'taza', 'avena en hojuelas', 'gra'],
+      [2, 'cda', 'cacao en polvo sin azúcar', 'sal'],
+      [1, 'cdta', 'polvo de hornear', 'gra'],
+      [1, 'cda', 'stevia granulada (o 2 cucharadas de miel)', 'sal'],
+      [2, 'taza', 'leche descremada o deslactosada', 'lac'],
+      [60, 'g', 'proteína en polvo (opcional)', 'otr'],
+      ['Cobertura'],
+      [2, 'cda', 'queso crema o yogur griego', 'lac'],
+      [1, 'cda', 'arequipe (mejor sin azúcar)', 'sal'],
+      [null, 'gusto', 'chocolate derretido para decorar (opcional)', 'otr'],
+    ],
+    pasos: [
+      'Prende el horno a 180 °C. Engrasa un molde o refractaria de unos 15 a 18 cm por lado.',
+      'En el mismo molde pisa los bananos con un tenedor hasta que queden en puré (también sirven 2 manzanas o peras en puré).',
+      'Agrega la avena, el cacao, el polvo de hornear, la stevia (o la miel), la proteína en polvo si vas a usar, y la leche. Mezcla muy bien hasta que todo quede integrado.',
+      'Horno a 180 °C por 35 a 40 minutos, o freidora de aire a 180 °C por unos 20 minutos. Está lista cuando al meter un cuchillo no sale masa pegada. Queda húmeda por dentro: eso es normal.',
+      'Déjala enfriar un rato. Cobertura: mezcla el queso crema (o el yogur griego) con el arequipe y úntalo encima.',
+      'Si quieres, decora con un hilito de chocolate derretido. Córtala en porciones y guárdala tapada en la nevera.',
+    ],
+    liv: 'Un cuarto de la torta por persona, con yogur griego en vez de queso crema, arequipe sin azúcar y sin el chocolate de encima.',
+    mus: 'Con la proteína en polvo en la mezcla (o leche en polvo), porción y media y un vaso de leche.',
+    adel: 'Se hace un día y queda para toda la semana: dura 4 o 5 días tapada en la nevera. Se come fría o tibia.',
+    con: 'Un café o un vaso de leche. También sirve de postre.',
+  },
+
   // ───────────── Salsas y aderezos (no pican) ─────────────
   // Cantidades para 4 porciones; una porción son unas 3 o 4 cucharadas.
   {
