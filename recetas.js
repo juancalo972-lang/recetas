@@ -769,6 +769,46 @@ const RECETAS = [
     con: 'Un vaso de leche, o con una cucharada de yogur griego encima. Nadie nota que lleva frijoles.',
   },
 
+  {
+    id: 'avena-pastel-zanahoria', o: 'fb', vu: 'https://www.facebook.com/watch/?v=38039968028927698', de: 'Lindsay Pleskot, nutricionista', ingles: true, foto: 'fotos/avena-pastel-zanahoria.jpg',
+    fija: 'Una sola tanda: un molde de 8 porciones (no se parte a la mitad)',
+    n: 'Avena horneada de pastel de zanahoria con crema de yogur', e: '🥕',
+    m: ['desayuno', 'postre'], p: 'huevo', a: ['horno', 'licuadora'], t: 55, d: 'Fácil', kcal: 385, prot: 11,
+    ing: [
+      ['Avena horneada'],
+      [1, 'taza', 'leche descremada o deslactosada', 'lac'],
+      [2 / 3, 'taza', 'compota de manzana sin azúcar', 'otr'],
+      [3, 'u', 'huevo|huevos', 'lac'],
+      [2, 'cda', 'miel de abejas', 'sal'],
+      [2, 'cda', 'aceite de oliva', 'bas'],
+      [2, 'cdta', 'esencia de vainilla', 'sal'],
+      [2.5, 'taza', 'avena en hojuelas', 'gra'],
+      [2, 'cdta', 'canela en polvo', 'bas'],
+      [2, 'cdta', 'polvo de hornear', 'gra'],
+      [1, 'cdta', 'bicarbonato de sodio', 'gra'],
+      [0.75, 'cdta', 'sal', 'bas'],
+      [1.5, 'taza', 'zanahoria rallada (sin pelar)', 'ver'],
+      [0.5, 'taza', 'uvas pasas', 'otr'],
+      ['Crema de yogur y queso crema'],
+      [250, 'g', 'queso crema (de barra)', 'lac'],
+      [2 / 3, 'taza', 'yogur griego natural', 'lac'],
+      [0.25, 'taza', 'miel de abejas', 'sal'],
+      [2, 'cdta', 'esencia de vainilla', 'sal'],
+    ],
+    pasos: [
+      'Prende el horno a 190 °C. Engrasa un molde cuadrado de 23 cm (9 x 9 pulgadas) y fórralo con papel de hornear.',
+      'Licúa la leche, la compota de manzana, los huevos, la miel, el aceite de oliva y la vainilla. Agrega la avena, la canela, el polvo de hornear, el bicarbonato y la sal, y licúa de nuevo hasta que la avena quede como harina y la masa lisa. Así sale suave, como un pastel y no como avena mojada.',
+      'Pasa la masa a un tazón y mezcla con la zanahoria rallada y las uvas pasas. No hace falta pelar las zanahorias.',
+      'Vierte en el molde y hornea de 30 a 40 minutos (a los 35 suele quedar perfecto), hasta que el centro esté firme.',
+      'Déjala enfriar del todo antes de poner la crema: si la cubres caliente, la crema se derrite.',
+      'Crema: licúa el queso crema, el yogur griego, la miel y la vainilla hasta que quede lisa. Extiéndela gruesa encima (la autora dice que ayuda con el azúcar en la sangre) y corta en 8 porciones.',
+    ],
+    liv: 'Una porción con la crema. Sin la crema son unas 230 calorías: si la quitas, ponle un poco de yogur griego y una cucharadita de miel.',
+    mus: 'Dos porciones con un vaso de leche o un yogur griego: unos 22 g de proteína solo con la avena y los huevos.',
+    adel: 'Se prepara en unos 20 minutos y alcanza para toda la semana: dura 5 días en la nevera, tapada y con la crema aparte o ya puesta.',
+    con: 'Un café o una fruta.',
+  },
+
   // ───────────── Salsas y aderezos (no pican) ─────────────
   // Cantidades para 4 porciones; una porción son unas 3 o 4 cucharadas.
   {
