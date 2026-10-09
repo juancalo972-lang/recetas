@@ -194,7 +194,23 @@ button, input { font: inherit; color: inherit; }
 .hoja-top .volver { flex: 1; justify-content: flex-start; }
 .hoja-in { max-width: 640px; margin: 0 auto; padding: 1rem 16px calc(3rem + env(safe-area-inset-bottom)); }
 
-.det-cab { text-align: center; }
+/* fotos */
+.mini-foto { display: block; width: 3.6rem; height: 3.6rem; border-radius: 14px; object-fit: cover; object-position: 50% 60%; }
+.cc-emoji .mini-foto { width: 4.4rem; height: 4.4rem; }
+.foto-plato {
+  position: relative; border-radius: var(--radio); overflow: hidden; background: #2A1E14;
+  width: min(100%, 22rem); aspect-ratio: 4 / 5; margin: 0 auto;
+}
+.foto-plato img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 60%; }
+.foto-tag { position: absolute; left: .6rem; bottom: .6rem; background: rgba(0, 0, 0, .6); color: #fff; border-radius: 999px; padding: .15rem .65rem; font-size: .78rem; font-weight: 700; }
+.sin-foto { height: 100%; display: grid; place-content: center; text-align: center; gap: .6rem; padding: 1rem; background: var(--accent-soft); color: var(--accent-dark); }
+.sin-foto span { font-size: 4.5rem; line-height: 1; }
+.sin-foto small { color: var(--accent-dark); font-size: .85rem; }
+.foto-botones { width: min(100%, 22rem); margin: .6rem auto 0; }
+.foto-botones .btn { font-size: .85rem; min-height: 2.9rem; }
+.btn.voz-on { background: var(--ok-soft); border-color: var(--ok); }
+
+.det-cab { text-align: center; margin-top: .8rem; }
 .det-emoji { font-size: 4rem; line-height: 1.1; }
 .det-cab h2 { margin: .3rem 0 .4rem; font-size: 1.45rem; }
 .etiquetas { display: flex; flex-wrap: wrap; justify-content: center; gap: .35rem; margin: .5rem 0; }
@@ -230,7 +246,7 @@ button, input { font: inherit; color: inherit; }
   display: grid; place-items: center; font-weight: 800; font-size: .95rem;
 }
 .pasos li.actual { background: var(--amarillo); border-color: var(--amarillo-borde); }
-.voz { position: sticky; bottom: .6rem; display: grid; grid-template-columns: 1fr 1.4fr 1fr; gap: .5rem; margin: .8rem 0; }
+.voz { display: grid; grid-template-columns: 1fr 1.4fr 1fr; gap: .5rem; margin: .8rem 0; }
 .voz .btn { min-height: 3.4rem; font-size: .9rem; box-shadow: 0 3px 10px rgba(60, 30, 0, .12); }
 
 .caja { border-radius: var(--radio); padding: .9rem 1rem; margin: 1rem 0; border: 1px solid var(--line); background: #fff; }

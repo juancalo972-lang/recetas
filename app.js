@@ -2,7 +2,7 @@
 /* ¿Qué cocino hoy? — recetas, menú de la semana y lista de mercado.
    Todo se guarda en el celular (localStorage); no hay servidor ni cuentas. */
 
-const VERSION = '1.1';
+const VERSION = '1.2';
 const CLAVE = 'que-cocino-hoy-v1';
 
 const MOMENTOS = {
@@ -22,7 +22,7 @@ const APARATOS = {
 };
 const PROTEINAS = {
   pollo: 'Pollo', res: 'Res', cerdo: 'Cerdo', pescado: 'Pescado', huevo: 'Huevo',
-  granos: 'Granos', lacteo: 'Lácteos', vegetal: 'Verduras', bebida: 'Bebida', dulce: 'Postre',
+  granos: 'Granos', lacteo: 'Lácteos', vegetal: 'Verduras', bebida: 'Bebida', dulce: 'Postre', salsa: 'Salsa',
 };
 const PASILLOS = [
   ['car', '🥩 Carnes, pollo y pescado'],
@@ -90,6 +90,7 @@ const DEF = {
   comidas: { desayuno: true, almuerzo: true, comida: true, bebida: true },
   aparatos: { estufa: true, horno: true, freidora: true, olla: true, licuadora: true },
   letra: 'grande',
+  voz: '',      // nombre de la voz elegida en Ajustes ('' = la mejor latina que haya)
   // obj: 'bajar' = bajar de peso · 'musculo' = ganar músculo
   dieta: [
     { nombre: 'Mamá', on: false, obj: 'bajar' },
@@ -114,6 +115,68 @@ let filtro = { q: '', f: 'todas' };
 let detalle = null;            // { id, k, paso }
 let promptInstalar = null;
 let wakeLock = null;
+
+/* ───────────── Fotos ─────────────
+   Foto de referencia = la miniatura del video de YouTube.
+   Si tu mamá toma su propia foto, esa reemplaza a la del video.
+   Las fotos propias van en su propia clave para no reescribirlas en cada cambio. */
+
+const CLAVE_FOTOS = 'que-cocino-hoy-fotos-v1';
+let FOTOS = {};
+try { FOTOS = JSON.parse(localStorage.getItem(CLAVE_FOTOS)) || {}; } catch (e) { FOTOS = {}; }
+let fotoPara = '';   // receta a la que se le está poniendo foto
+
+function guardarFotos() {
+  try { localStorage.setItem(CLAVE_FOTOS, JSON.stringify(FOTOS)); return true; } catch (e) { return false; }
+}
+function fotoDe(r) {
+  if (FOTOS[r.id]) return FOTOS[r.id];
+  if (r.v) return `https://i.ytimg.com/vi/${r.v}/${r.fv || 'oardefault'}.jpg`;
+  return '';
+}
+// Si la miniatura vertical no existe, prueba la normal; si tampoco, deja el emoji
+const SI_FALLA = `onerror="if(!this.dataset.f&&this.src.includes('ytimg')){this.dataset.f=1;this.src=this.src.replace(/[a-z0-9]+\\.jpg$/,'hqdefault.jpg')}else{this.replaceWith(this.dataset.e||'')}"`;
+function miniFoto(r) {
+  const url = fotoDe(r);
+  return url ? `<img class="mini-foto" src="${url}" alt="" loading="lazy" data-e="${r.e}" ${SI_FALLA}>` : r.e;
+}
+function htmlFotoPlato(r) {
+  const url = fotoDe(r);
+  const propia = !!FOTOS[r.id];
+  return `<div class="foto-plato">${url
+    ? `<img src="${url}" alt="Foto de ${esc(r.n)}" data-e="${r.e}" ${SI_FALLA}><span class="foto-tag">${propia ? '📷 Tu foto' : '▶️ Foto del video'}</span>`
+    : `<div class="sin-foto"><span>${r.e}</span><small>Todavía no hay foto. Cuando la prepares, tómale una 📷</small></div>`}</div>
+    <div class="fila2 foto-botones">
+      <button class="btn suave" data-act="ponerFoto" data-id="${r.id}">📷 ${propia ? 'Cambiar mi foto' : 'Poner mi foto'}</button>
+      ${propia ? `<button class="btn claro" data-act="quitarFoto" data-id="${r.id}">Quitar mi foto</button>` : '<span></span>'}
+    </div>`;
+}
+// Achica la foto (máximo 800 px) para que quepan muchas en el celular
+function achicarFoto(archivo) {
+  return new Promise((listo, falla) => {
+    const img = new Image();
+    const url = URL.createObjectURL(archivo);
+    img.onload = () => {
+      const k = Math.min(1, 800 / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * k);
+      c.height = Math.round(img.height * k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      listo(c.toDataURL('image/jpeg', 0.72));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); falla(new Error('no es una imagen')); };
+    img.src = url;
+  });
+}
+function refrescarFoto(id) {
+  const r = R[id];
+  for (const h of pila) {
+    const cont = h.el.querySelector('#fotoCont');
+    if (cont && h.el.dataset.receta === id) cont.innerHTML = htmlFotoPlato(r);
+  }
+  render();
+}
 
 /* ───────────── Guardar y cargar ───────────── */
 
@@ -467,7 +530,7 @@ function tarjetaComida(fecha, slot) {
   return `<article class="card">
     <div class="mom">${m.e} ${m.t}</div>
     <button class="cc-main" data-act="ver" data-id="${r.id}">
-      <span class="cc-emoji">${r.e}</span>
+      <span class="cc-emoji">${miniFoto(r)}</span>
       <span><span class="cc-nombre">${esc(r.n)}</span><span class="meta">${meta}</span></span>
     </button>
     <div class="fila2">
@@ -522,7 +585,7 @@ function vistaHoy() {
     html += `<section class="card nuevo" style="margin-top:1rem">
       <h3 style="margin:0">✨ ¿Algo nuevo hoy?</h3>
       <button class="cc-main" data-act="ver" data-id="${n.id}">
-        <span class="cc-emoji">${n.e}</span>
+        <span class="cc-emoji">${miniFoto(n)}</span>
         <span><span class="cc-nombre">${esc(n.n)}</span><span class="meta">⏱ ${tiempo(n)} · ${aparatosCorto(n)}</span></span>
       </button>
       <div class="fila2">
@@ -656,7 +719,7 @@ function vistaMercado() {
 
 const FILTROS = [
   ['todas', 'Todas'], ['fav', '⭐ De siempre'], ['nuevas', '✨ Sin probar'],
-  ['desayuno', '🌅 Desayunos'], ['almuerzo', '🍽️ Almuerzos y comidas'], ['postre', '🍮 Postres'], ['bebida', '🥤 Para tomar'],
+  ['desayuno', '🌅 Desayunos'], ['almuerzo', '🍽️ Almuerzos y comidas'], ['postre', '🍮 Postres'], ['salsa', '🥣 Salsas y aderezos'], ['bebida', '🥤 Para tomar'],
   ['pollo', '🐔 Pollo'], ['res', '🐄 Res'], ['cerdo', '🐖 Cerdo'], ['pescado', '🐟 Pescado'],
   ['granos', '🫘 Granos'], ['huevo', '🥚 Huevo'], ['olla', '🍲 Olla lenta'], ['freidora', '💨 Freidora'],
 ];
@@ -664,8 +727,8 @@ const FILTROS = [
 function pasaFiltro(r, f) {
   if (f === 'fav') return !!S.fav[r.id];
   if (f === 'nuevas') return !(S.hist[r.id] && S.hist[r.id].veces);
-  if (f === 'desayuno' || f === 'postre' || f === 'bebida') return r.m.includes(f);
-  if (f === 'almuerzo') return r.m.includes('almuerzo') || r.m.includes('comida') || r.m.includes('acompañante');
+  if (f === 'desayuno' || f === 'postre' || f === 'bebida' || f === 'salsa') return r.m.includes(f);
+  if (f === 'almuerzo') return r.m.includes('almuerzo') || r.m.includes('comida');
   if (PROTEINAS[f]) return r.p === f;
   if (APARATOS[f]) return r.a.some(req => req.split('|').includes(f));
   return true;
@@ -702,7 +765,7 @@ function filaReceta(r, extra = '') {
   const ok = puede(r);
   const badge = S.fav[r.id] ? '⭐' : !(S.hist[r.id] && S.hist[r.id].veces) ? '✨' : '';
   return `<button class="fila-receta ${ok ? '' : 'no-puede'}" data-act="ver" data-id="${r.id}">
-    <span class="e">${r.e}</span>
+    <span class="e">${miniFoto(r)}</span>
     <span><b>${esc(r.n)}</b><small>⏱ ${tiempo(r)} · ${aparatosCorto(r)} · ${PROTEINAS[r.p]}</small>
     ${ok ? '' : `<span class="falta">Necesita ${falta(r)}</span>`}${extra}</span>
     <span class="badge">${badge}</span></button>`;
@@ -727,6 +790,19 @@ function vistaAjustes() {
     ${[['normal', 'Normal'], ['grande', 'Grande'], ['muy', 'Muy grande']].map(([k, t]) =>
       `<button class="btn ${S.letra === k ? 'on' : ''}" data-act="letra" data-k="${k}">${t}</button>`).join('')}
     </div></section>`;
+
+  if ('speechSynthesis' in window) {
+    const es = vocesEs().slice(0, 8);
+    const actual = vozEs();
+    html += `<section class="card"><h3>🔊 Voz que lee las recetas</h3>
+      ${es.length ? `<p class="ayuda">Toca una para escucharla y elegirla.</p><div class="pila">
+        ${es.map((v, i) => {
+          const on = actual && v.name === actual.name;
+          return `<button class="btn ${on ? 'voz-on' : ''}" data-act="elegirVoz" data-k="${esc(v.name)}">${on ? '✅ ' : ''}${esc(nombreVoz(v, i))}</button>`;
+        }).join('')}</div>`
+      : `<p>Todavía no hay voz en español aquí.</p><p class="ayuda">${ayudaVoz()}</p>`}
+    </section>`;
+  }
 
   const filaMeta = (p, i) => `<div class="persona-dieta">
       <input class="campo" data-in="nombreDieta" data-i="${i}" value="${esc(p.nombre)}" aria-label="Nombre">
@@ -769,7 +845,7 @@ function vistaAjustes() {
 function abrirReceta(id) {
   const r = R[id];
   if (!r) return;
-  if (r.casa) { abrirHoja(htmlIdea(r)); return; }
+  if (r.casa) { abrirHoja(htmlIdea(r)).dataset.receta = id; return; }
   detalle = { id, k: S.personas, paso: -1 };
   const el = abrirHoja(htmlReceta(r), { alCerrar: () => { pararVoz(); soltarPantalla(); detalle = null; } });
   el.dataset.receta = id;
@@ -781,7 +857,8 @@ function htmlIdea(r) {
   const plato = r.m.some(esPrincipal);
   return `<div class="hoja-top"><button class="btn volver" data-act="cerrar">← Volver</button></div>
     <div class="hoja-in">
-      <div class="det-cab"><div class="det-emoji">${r.e}</div><h2>${esc(r.n)}</h2>
+      <div id="fotoCont">${htmlFotoPlato(r)}</div>
+      <div class="det-cab"><h2>${esc(r.n)}</h2>
         <p class="meta">🏠 Receta de la casa: la haces como siempre.</p></div>
       ${dietaOn() && plato ? `<div class="caja dieta"><h3>🥗 Para bajar de peso (${esc(y(quienes('bajar')))})</h3>
         <p>Plato: la mitad verduras o ensalada, un cuarto la proteína y un cuarto de arroz, papa o arepa (no las tres).</p></div>` : ''}
@@ -813,7 +890,8 @@ function htmlReceta(r) {
   const nueva = !(S.hist[r.id] && S.hist[r.id].veces);
   const bebida = r.m.includes('bebida');
   const video = htmlVideo(r);
-  const conPlato = !bebida && !r.m.includes('acompañante');
+  const salsa = r.m.includes('salsa');
+  const conPlato = !bebida && !salsa;
   const dieta = dietaOn() && r.liv ? `<div class="caja dieta"><h3>🥗 Para bajar de peso (${esc(y(quienes('bajar')))})</h3>
       <p>${r.liv}</p>
       ${conPlato ? '<p class="ayuda">Plato: la mitad verduras, un cuarto proteína y un cuarto de arroz, papa o arepa.</p>' : ''}</div>` : '';
@@ -826,15 +904,15 @@ function htmlReceta(r) {
       <button class="btn ${S.fav[r.id] ? 'suave' : ''}" data-act="favorito" data-id="${r.id}" id="btnFav">${S.fav[r.id] ? '⭐ De siempre' : '☆ Me gusta'}</button>
     </div>
     <div class="hoja-in">
+      <div id="fotoCont">${htmlFotoPlato(r)}</div>
       <div class="det-cab">
-        <div class="det-emoji">${r.e}</div>
         <h2>${esc(r.n)}</h2>
         <div class="etiquetas">
           <span class="etq">⏱ ${r.t} min</span><span class="etq">${r.d}</span><span class="etq">${PROTEINAS[r.p]}</span>
           ${S.fav[r.id] ? '<span class="etq fav">⭐ De siempre</span>' : ''}${nueva ? '<span class="etq nueva">✨ Sin probar</span>' : ''}
         </div>
         <p class="meta">${aparatosTexto(r)}</p>
-        <p class="meta">${bebida ? `Aprox. ${r.kcal} calorías por vaso` : `Aprox. ${r.kcal} calorías y ${r.prot} g de proteína por porción`}</p>
+        <p class="meta">${bebida ? `Aprox. ${r.kcal} calorías por vaso` : salsa ? `Aprox. ${r.kcal} calorías por porción (3 o 4 cucharadas)` : `Aprox. ${r.kcal} calorías y ${r.prot} g de proteína por porción`}</p>
       </div>
       ${r.lento ? `<div class="caja lento"><b>🍲 Olla lenta:</b> ${r.lento}. Empiézala con tiempo.</div>` : ''}
       ${puede(r) ? '' : `<div class="caja lento">Esta receta necesita ${falta(r)}.</div>`}
@@ -858,9 +936,11 @@ function htmlReceta(r) {
       ${dieta}
       ${musculo}
       ${r.adel ? `<div class="caja"><h3>📦 Para adelantar</h3><p>${r.adel}</p></div>` : ''}
-      ${r.con ? `<div class="caja"><h3>${bebida ? '🍽️ Para tomar con' : '🍽️ Acompáñala con'}</h3><p>${r.con}</p></div>` : ''}
+      ${r.pica ? `<div class="caja"><h3>🌶️ Si a alguien le gusta picante</h3><p>${r.pica}</p></div>` : ''}
+      ${r.salsas ? `<div class="caja"><h3>🥣 Salsas que le quedan bien</h3><div class="chips">${r.salsas.filter(id => R[id]).map(id => `<button class="chip" data-act="ver" data-id="${id}">${R[id].e} ${esc(R[id].n)}</button>`).join('')}</div></div>` : ''}
+      ${r.con ? `<div class="caja"><h3>${bebida ? '🍽️ Para tomar con' : salsa ? '🍽️ Le queda bien a' : '🍽️ Acompáñala con'}</h3><p>${r.con}</p></div>` : ''}
       <div class="pila" style="margin-top:1.2rem">
-        <button class="btn ok grande" data-act="hecha" data-id="${r.id}">✅ ${bebida ? 'Ya la preparé' : 'Ya la cociné'}</button>
+        <button class="btn ok grande" data-act="hecha" data-id="${r.id}">✅ ${bebida || salsa ? 'Ya la preparé' : 'Ya la cociné'}</button>
         <button class="btn" data-act="planear" data-id="${r.id}">📅 Ponerla en el menú</button>
         <button class="btn wa" data-act="waReceta" data-id="${r.id}">📤 Enviar la receta por WhatsApp</button>
       </div>
@@ -888,13 +968,54 @@ function soltarPantalla() {
 
 /* ───────────── Voz ───────────── */
 
+// Las voces cargan tarde en Android y Chrome: hay que esperarlas. Si no se espera,
+// el navegador lee el español con la voz en inglés que tenga por defecto.
+const PAISES = {
+  'es-co': 'Colombia', 'es-mx': 'México', 'es-us': 'Estados Unidos (latino)', 'es-419': 'Latinoamérica',
+  'es-ar': 'Argentina', 'es-cl': 'Chile', 'es-pe': 'Perú', 'es-ve': 'Venezuela', 'es-es': 'España',
+};
+const LATINAS = ['es-co', 'es-mx', 'es-us', 'es-419', 'es-ve', 'es-pe', 'es-cl', 'es-ar'];
+let voces = [];
+const idioma = v => v.lang.replace('_', '-').toLowerCase();
+
+function cargarVoces() {
+  voces = 'speechSynthesis' in window ? speechSynthesis.getVoices() : [];
+}
+async function asegurarVoces() {
+  cargarVoces();
+  if (voces.length) return;
+  await new Promise(listo => {
+    const t = setTimeout(listo, 1500);
+    speechSynthesis.addEventListener('voiceschanged', () => { clearTimeout(t); listo(); }, { once: true });
+  });
+  cargarVoces();
+}
+// Voces en español, primero las latinas y la de España al final
+function vocesEs() {
+  const rango = v => { const i = LATINAS.indexOf(idioma(v)); return i >= 0 ? i : idioma(v) === 'es-es' ? 99 : 50; };
+  return voces.filter(v => idioma(v).startsWith('es')).sort((a, b) => rango(a) - rango(b));
+}
 function vozEs() {
-  const vs = speechSynthesis.getVoices();
-  for (const p of ['es-co', 'es-us', 'es-mx', 'es-419', 'es-es']) {
-    const v = vs.find(v => v.lang.replace('_', '-').toLowerCase() === p);
-    if (v) return v;
+  const es = vocesEs();
+  return es.find(v => v.name === S.voz) || es[0] || null;
+}
+function nombreVoz(v, i) {
+  const pais = PAISES[idioma(v)] || v.lang;
+  const nombre = v.name.replace(/^(Microsoft|Google)\s*/i, '').replace(/\s*[-–(].*$/, '').trim();
+  // En Android los nombres son códigos ("es-us-x-sfb-local"): mejor "voz 2"
+  return /^[a-z]{2,3}$/i.test(nombre) || !nombre ? `${pais} · voz ${i + 1}` : `${pais} · ${nombre}`;
+}
+function ayudaVoz() {
+  if (/Android/i.test(navigator.userAgent)) {
+    return 'En el celular: abre <b>Ajustes</b> → busca <b>"Salida de texto a voz"</b> → en Motor preferido elige <b>Servicios de voz de Google</b> → toca el engranaje ⚙️ → <b>Instalar datos de voz</b> → <b>Español (Estados Unidos)</b>. Después vuelve a abrir la app.';
   }
-  return vs.find(v => v.lang.toLowerCase().startsWith('es')) || null;
+  if (/Windows/i.test(navigator.userAgent)) {
+    return 'En el computador: <b>Configuración</b> → <b>Hora e idioma</b> → <b>Voz</b> → <b>Agregar voces</b> → <b>Español (México)</b>. Después cierra y vuelve a abrir el navegador. (En Google Chrome o Microsoft Edge ya viene una voz en español.)';
+  }
+  return 'Instala una voz en español en los ajustes de voz del dispositivo y vuelve a abrir la app.';
+}
+function avisarSinVoz() {
+  preguntar('🔊 Falta la voz en español', ayudaVoz(), [{ t: 'Entendido', clase: 'pri', fn: null }]);
 }
 function paraVoz(t) {
   return t
@@ -904,12 +1025,16 @@ function paraVoz(t) {
     .replace(/(\d)¾/g, '$1 y tres cuartos').replace(/¾/g, 'tres cuartos de')
     .replace(/⅓/g, 'un tercio de').replace(/⅔/g, 'dos tercios de');
 }
-function hablar(texto) {
+async function hablar(texto) {
   if (!('speechSynthesis' in window)) { toast('Este celular no puede leer en voz alta'); return; }
   speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(paraVoz(texto));
+  await asegurarVoces();
   const v = vozEs();
-  if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = 'es-CO'; }
+  // Mejor no leer que leer con acento gringo
+  if (!v) { avisarSinVoz(); return; }
+  const u = new SpeechSynthesisUtterance(paraVoz(texto));
+  u.voice = v;
+  u.lang = v.lang;
   u.rate = 0.9;
   speechSynthesis.speak(u);
 }
@@ -1016,7 +1141,7 @@ function htmlCasaRes() {
   if (!S.casa.length) return '<p class="ayuda">Todavía no has marcado nada.</p>';
   const res = [];
   for (const r of RECETAS) {
-    if (S.oculta[r.id] || !puede(r) || r.m.includes('acompañante') || r.m.includes('bebida')) continue;
+    if (S.oculta[r.id] || !puede(r) || r.m.includes('salsa') || r.m.includes('bebida')) continue;
     const ps = principales(r);
     const tiene = ps.filter(p => p.chips.some(c => S.casa.includes(c)));
     if (!tiene.length) continue;
@@ -1116,7 +1241,7 @@ function imprimir() {
 }
 
 function exportar() {
-  const datos = { app: 'que-cocino-hoy', version: VERSION, fecha: hoy(), datos: S };
+  const datos = { app: 'que-cocino-hoy', version: VERSION, fecha: hoy(), datos: S, fotos: FOTOS };
   const blob = new Blob([JSON.stringify(datos, null, 1)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -1128,6 +1253,25 @@ function exportar() {
   toast('Copia guardada en Descargas');
 }
 
+$('#fotoArchivo').addEventListener('change', async e => {
+  const archivo = e.target.files[0];
+  e.target.value = '';
+  if (!archivo || !fotoPara) return;
+  try {
+    const antes = FOTOS[fotoPara];
+    FOTOS[fotoPara] = await achicarFoto(archivo);
+    if (!guardarFotos()) {
+      if (antes) FOTOS[fotoPara] = antes; else delete FOTOS[fotoPara];
+      toast('No hay espacio para más fotos: quita algunas');
+      return;
+    }
+    refrescarFoto(fotoPara);
+    toast('📷 ¡Foto guardada!');
+  } catch (err) {
+    toast('No pude abrir esa foto');
+  }
+});
+
 $('#archivo').addEventListener('change', e => {
   const f = e.target.files[0];
   if (!f) return;
@@ -1138,6 +1282,7 @@ $('#archivo').addEventListener('change', e => {
       if (d.app !== 'que-cocino-hoy' || !d.datos) throw new Error('no es una copia');
       S = mezclar(d.datos);
       guardar();
+      if (d.fotos) { FOTOS = d.fotos; guardarFotos(); }
       render();
       toast('✅ Copia recuperada');
     } catch (err) {
@@ -1192,7 +1337,7 @@ function planear(id) {
       } });
     }
   }
-  if (!opciones.length) { toast('Esta receta es un acompañante: úsala con otra receta'); return; }
+  if (!opciones.length) { toast('Es una salsa: úsala con otra receta'); return; }
   opciones.push({ t: 'Cancelar', clase: 'claro', fn: null });
   preguntar('📅 ¿Para cuándo?', esc(r.n), opciones);
 }
@@ -1331,6 +1476,19 @@ const ACCIONES = {
     render();
   },
   letra: d => { S.letra = d.k; guardar(); render(); },
+  ponerFoto: d => { fotoPara = d.id; $('#fotoArchivo').click(); },
+  quitarFoto: d => {
+    delete FOTOS[d.id];
+    guardarFotos();
+    refrescarFoto(d.id);
+    toast('Listo, quité tu foto');
+  },
+  elegirVoz: d => {
+    S.voz = d.k;
+    guardar();
+    render();
+    hablar('Hola. Así sueno leyendo las recetas.');
+  },
   mostrar: d => { delete S.oculta[d.id]; guardar(); render(); toast('Listo, vuelve a salir en el menú'); },
   exportar: () => exportar(),
   importar: () => $('#archivo').click(),
@@ -1413,7 +1571,10 @@ document.addEventListener('visibilitychange', () => {
   if (hoy() !== diaVisto) { diaVisto = hoy(); render(); }
 });
 
-if ('speechSynthesis' in window) speechSynthesis.getVoices();
+if ('speechSynthesis' in window) {
+  cargarVoces();
+  speechSynthesis.addEventListener('voiceschanged', () => { cargarVoces(); if (tab === 'ajustes') render(); });
+}
 
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
