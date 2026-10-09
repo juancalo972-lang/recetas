@@ -2,7 +2,7 @@
 /* ¿Qué cocino hoy? — recetas, menú de la semana y lista de mercado.
    Todo se guarda en el celular (localStorage); no hay servidor ni cuentas. */
 
-const VERSION = '1.13';
+const VERSION = '1.14';
 const CLAVE = 'que-cocino-hoy-v1';
 
 const MOMENTOS = {

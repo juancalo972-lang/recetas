@@ -849,6 +849,40 @@ const RECETAS = [
     con: 'Un café o un vaso de leche. Si no tienes proteína en polvo, déjala por fuera: queda igual de rica, con menos proteína.',
   },
 
+  {
+    id: 'brownie-cheesecake-proteico', o: 'fb', vu: 'https://www.facebook.com/share/r/1QSekQhGv4/', de: 'J.Newtrition (receta original de AlleYeZonJe)', ingles: true, foto: 'fotos/brownie-cheesecake.jpg',
+    fija: 'Una sola tanda: un molde pequeño de unos 18 cm, para 4 porciones',
+    n: 'Cheesecake sobre base de brownie, alto en proteína', e: '🍰',
+    m: ['postre', 'desayuno'], p: 'lacteo', a: ['freidora|horno'], t: 55, reposo: '30 minutos en la nevera', d: 'Media', kcal: 220, prot: 35,
+    ing: [
+      ['Base de brownie'],
+      [90, 'g', 'frijol negro enlatado, escurrido y enjuagado', 'otr'],
+      [4, 'cda', 'cacao en polvo sin azúcar', 'sal'],
+      [1, 'cda', 'stevia granulada', 'sal'],
+      [2, 'cda', 'leche de almendras (o leche normal)', 'lac'],
+      [2, 'cda', 'sirope de chocolate sin azúcar (opcional)', 'sal'],
+      [1, 'u', 'medida de proteína en polvo sabor chocolate|medidas de proteína en polvo sabor chocolate', 'otr'],
+      ['Relleno de cheesecake'],
+      [600, 'g', 'yogur griego natural sin azúcar', 'lac'],
+      [1, 'u', 'huevo|huevos', 'lac'],
+      [10, 'g', 'gelatina o pudín instantáneo sin azúcar, en polvo', 'gra'],
+      [40, 'g', 'proteína en polvo (vainilla o neutra)', 'otr'],
+      [15, 'g', 'stevia granulada', 'sal'],
+    ],
+    pasos: [
+      'Base: enjuaga y escurre los frijoles. Pisa o licúa los frijoles con el cacao, la stevia, la leche de almendras, el sirope de chocolate (si usas) y la proteína en polvo, hasta que quede una masa espesa y lisa, como de brownie.',
+      'Forra con papel de hornear un molde pequeño (unos 18 cm) y extiende la base de brownie en el fondo, apretándola con una cuchara.',
+      'Relleno: licúa el yogur griego con el huevo, la gelatina en polvo, la proteína en polvo y la stevia, hasta que quede completamente liso.',
+      'Vierte el relleno encima de la base.',
+      'Cocina en la freidora de aire a 200 °C por 30 minutos. En horno, calcula unos 35 a 40 minutos a 180 °C (el video usa freidora; el tiempo del horno es aproximado: está listo cuando el centro ya no se mueve líquido).',
+      'Déjalo enfriar un poco y llévalo a la nevera 30 minutos antes de cortar en 4 porciones.',
+    ],
+    liv: 'Una porción: ya es liviana (unas 220 calorías con 35 g de proteína). Acompáñala con fresas en vez de más porciones.',
+    mus: 'Dos porciones: unos 70 g de proteína. Sirve de postre grande o después del gimnasio.',
+    adel: 'Se hace en una hora y dura 4 días en la nevera. Se come frío.',
+    con: 'Fresas o frambuesas encima. Necesita proteína en polvo para el relleno: sin ella no queda igual de firme. No se siente el sabor a frijol.',
+  },
+
   // ───────────── Salsas y aderezos (no pican) ─────────────
   // Cantidades para 4 porciones; una porción son unas 3 o 4 cucharadas.
   {
