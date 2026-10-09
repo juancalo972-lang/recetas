@@ -2,15 +2,17 @@
 /* ¿Qué cocino hoy? — recetas, menú de la semana y lista de mercado.
    Todo se guarda en el celular (localStorage); no hay servidor ni cuentas. */
 
-const VERSION = '1.0';
+const VERSION = '1.1';
 const CLAVE = 'que-cocino-hoy-v1';
 
 const MOMENTOS = {
   desayuno: { t: 'Desayuno', e: '🌅' },
   almuerzo: { t: 'Almuerzo', e: '☀️' },
   comida: { t: 'Comida', e: '🌙' },
+  bebida: { t: 'Para tomar', e: '🥤' },
 };
-const ORDEN = ['desayuno', 'almuerzo', 'comida'];
+const ORDEN = ['desayuno', 'almuerzo', 'comida', 'bebida'];
+const esPrincipal = s => s === 'almuerzo' || s === 'comida';
 const APARATOS = {
   estufa: ['Estufa', '🔥'],
   horno: ['Horno', '♨️'],
@@ -20,7 +22,7 @@ const APARATOS = {
 };
 const PROTEINAS = {
   pollo: 'Pollo', res: 'Res', cerdo: 'Cerdo', pescado: 'Pescado', huevo: 'Huevo',
-  granos: 'Granos', lacteo: 'Lácteos', vegetal: 'Verduras',
+  granos: 'Granos', lacteo: 'Lácteos', vegetal: 'Verduras', bebida: 'Bebida', dulce: 'Postre',
 };
 const PASILLOS = [
   ['car', '🥩 Carnes, pollo y pescado'],
@@ -31,6 +33,7 @@ const PASILLOS = [
   ['otr', '🥫 Enlatados y otros'],
   ['sal', '🧂 Salsas y especias'],
   ['bas', '✔️ Revisa que tengas en la cocina'],
+  ['casa', '🏠 Para las recetas de la casa'],
 ];
 const UNIDADES = {
   taza: ['taza', 'tazas'],
@@ -64,7 +67,8 @@ const CASA = [
 ];
 
 const CONSEJOS = [
-  'Un vaso grande de agua antes de cada comida ayuda a llenarse. La gaseosa normal tiene mucha azúcar: si les gusta lo burbujeante, mejor agua con gas o gaseosa cero.',
+  'Para tomar, las sodas de la app (fruta + Bretaña, sin azúcar): llenan y reemplazan la gaseosa y los jugos con azúcar, que es lo que más engorda de lo que se toma.',
+  'Un vaso grande de agua antes de cada comida ayuda a llenarse.',
   'Plato más pequeño: la mitad verduras, un cuarto proteína (del tamaño de la palma de la mano) y un cuarto de arroz, papa o arepa.',
   'Proteína en cada comida (huevo, pollo, carne, pescado o frijoles): llena más y por más tiempo.',
   'Coman despacio: el cuerpo tarda unos 20 minutos en sentirse lleno.',
@@ -73,14 +77,25 @@ const CONSEJOS = [
   'Una caminata de 20 a 30 minutos después del almuerzo ayuda más que una dieta muy estricta.',
   'Si toman medicamentos o tienen diabetes o presión alta, hablen con el médico antes de cambiar mucho la comida.',
 ];
+const CONSEJOS_MUSCULO = [
+  'Proteína en las tres comidas: huevo, pollo, carne, pescado, yogur griego o leche.',
+  'Batido fácil: leche, un banano, 3 cucharadas de avena y media taza de yogur griego en la licuadora.',
+  'Comer más solo sirve si entrenas fuerza (pesas o con tu propio peso) 3 o 4 veces por semana.',
+  'Dormir 7 u 8 horas: el músculo se construye descansando.',
+];
 
 const DEF = {
-  v: 1,
+  v: 2,
   personas: 2,
-  comidas: { desayuno: true, almuerzo: true, comida: true },
+  comidas: { desayuno: true, almuerzo: true, comida: true, bebida: true },
   aparatos: { estufa: true, horno: true, freidora: true, olla: true, licuadora: true },
   letra: 'grande',
-  dieta: [{ nombre: 'Mamá', on: false }, { nombre: 'Papá', on: false }],
+  // obj: 'bajar' = bajar de peso · 'musculo' = ganar músculo
+  dieta: [
+    { nombre: 'Mamá', on: false, obj: 'bajar' },
+    { nombre: 'Papá', on: false, obj: 'bajar' },
+    { nombre: 'Juan', on: true, obj: 'musculo' },
+  ],
   plan: {},     // 'AAAA-MM-DD': { desayuno: id, almuerzo: id, comida: id }
   hist: {},     // id: { veces, ultima }
   fav: {},      // recetas de siempre
@@ -90,7 +105,8 @@ const DEF = {
   nuevo: { fecha: '', id: '' },
 };
 
-const R = Object.fromEntries(RECETAS.map(r => [r.id, r]));
+const IDEAS = IDEAS_CASA.map(i => Object.assign({ casa: true, a: [], ing: [], pasos: [] }, i));
+const R = Object.fromEntries([...RECETAS, ...IDEAS].map(r => [r.id, r]));
 let S = cargar();
 let tab = 'hoy';
 let semanaVista = '';          // lunes de la semana que se ve en Semana y Mercado
@@ -117,6 +133,9 @@ function mezclar(datos) {
       base[k] = v;
     }
   }
+  // Copias de la versión 1: sin metas por persona ni Juan
+  base.dieta.forEach(p => { if (!p.obj) p.obj = 'bajar'; });
+  if (!base.dieta.some(p => p.obj === 'musculo')) base.dieta.push({ nombre: 'Juan', on: true, obj: 'musculo' });
   return base;
 }
 function guardar() {
@@ -150,8 +169,8 @@ const $ = (s, el = document) => el.querySelector(s);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 const slots = () => ORDEN.filter(s => S.comidas[s]);
-const dietaOn = () => S.dieta.some(p => p.on);
-const quienesDieta = () => S.dieta.filter(p => p.on).map(p => p.nombre || 'Alguien');
+const quienes = obj => S.dieta.filter(p => p.on && p.obj === obj).map(p => p.nombre || 'Alguien');
+const dietaOn = () => quienes('bajar').length > 0;
 const y = lista => lista.length > 1 ? lista.slice(0, -1).join(', ') + ' y ' + lista[lista.length - 1] : (lista[0] || '');
 
 function puede(r) {
@@ -227,6 +246,9 @@ function lineaIng(q, u, nombre, k) {
 function candidatos(slot) {
   return RECETAS.filter(r => r.m.includes(slot) && puede(r) && !S.oculta[r.id]);
 }
+function ideasPara(slot) {
+  return IDEAS.filter(r => r.m.includes(slot) && !S.oculta[r.id]);
+}
 
 function vecinos(fecha, slot) {
   const seq = [];
@@ -242,15 +264,20 @@ function vecinos(fecha, slot) {
 function huboFrijoles(fecha) {
   for (const d of [-1, -2]) {
     const dia = S.plan[sumar(fecha, d)] || {};
-    if (Object.values(dia).includes('frijoles-olla-lenta')) return true;
+    if (Object.values(dia).includes('casa-frijoles')) return true;
   }
   return false;
 }
 
+// Elige una receta para un día y una comida.
+// Primero las recetas de video sin repetir en la semana; cuando se acaban,
+// sugiere un plato de la casa ("¿por qué no un ajiaco?") en vez de repetir.
 function elegir(fecha, slot, excluir = []) {
   // El calentado solo tiene sentido si hubo frijoles el día anterior o antier.
-  const pool = candidatos(slot).filter(r => !excluir.includes(r.id) && (r.id !== 'calentado-paisa' || huboFrijoles(fecha)));
-  if (!pool.length) return null;
+  const sirve = r => !excluir.includes(r.id) && (r.id !== 'casa-calentado' || huboFrijoles(fecha));
+  const pool = candidatos(slot).filter(sirve);
+  const ideas = ideasPara(slot).filter(sirve);
+  if (!pool.length && !ideas.length) return null;
 
   const usadas = {}, prot = {};
   for (const f of semanaDe(lunesDe(fecha))) {
@@ -261,31 +288,40 @@ function elegir(fecha, slot, excluir = []) {
       const r = R[dia[s]];
       if (!r) continue;
       usadas[r.id] = (usadas[r.id] || 0) + 1;
-      if (s !== 'desayuno') prot[r.p] = (prot[r.p] || 0) + 1;
+      if (esPrincipal(s)) prot[r.p] = (prot[r.p] || 0) + 1;
     }
   }
   const principales = 7 * ['almuerzo', 'comida'].filter(s => S.comidas[s]).length;
   const maxProt = Math.max(2, Math.ceil(principales * 0.4));
-  const cerca = slot === 'desayuno' ? [] : vecinos(fecha, slot);
+  const cerca = esPrincipal(slot) ? vecinos(fecha, slot) : [];
 
-  // Reglas, de la más importante a la menos. Si ninguna receta cumple todas, se van soltando desde el final.
+  const unica = r => !usadas[r.id];
+  const variada = r => !cerca.some(v => v.p === r.p);
   const reglas = [
-    r => !usadas[r.id],
-    r => !cerca.some(v => v.p === r.p),
-    r => slot === 'desayuno' || (prot[r.p] || 0) < maxProt,
+    unica,
+    variada,
+    r => !esPrincipal(slot) || (prot[r.p] || 0) < maxProt,
     r => !(slot === 'comida' && dietaOn() && r.kcal > 480),
   ];
-  let opciones = pool;
-  for (let n = reglas.length; n >= 0; n--) {
-    const ok = pool.filter(r => reglas.slice(0, n).every(fn => fn(r)));
-    if (ok.length) { opciones = ok; break; }
-  }
+  const cumple = (lista, rs) => lista.filter(r => rs.every(fn => fn(r)));
+  // De la mejor opción a la menos buena: la primera que tenga algo, gana.
+  const intentos = [
+    () => cumple(pool, reglas),
+    () => cumple(pool, [unica, variada]),
+    () => cumple(ideas, [unica, variada]),
+    () => cumple(pool, [unica]),
+    () => cumple(ideas, [unica]),
+    () => pool,
+    () => ideas,
+  ];
+  let opciones = [];
+  for (const intento of intentos) { opciones = intento(); if (opciones.length) break; }
   return sortear(opciones, r => {
     let w = 1;
     if (S.fav[r.id]) w *= 3;
     const h = S.hist[r.id];
     if (h && h.ultima && Math.abs(diasEntre(h.ultima, fecha)) < 10) w *= 0.5;
-    if (r.id === 'calentado-paisa') w *= 6;
+    if (r.id === 'casa-calentado') w *= 6;
     return w;
   });
 }
@@ -343,12 +379,19 @@ function listaMercado(desde, hasta) {
     for (const s of slots()) {
       const r = R[dia[s]];
       if (!r) continue;
+      if (r.casa) {
+        // Platos de la casa: no tienen ingredientes aquí, solo un recordatorio
+        const clave = `casa|${r.id}`;
+        items[clave] = { clave, sing: `${r.n} (lo de siempre)`, plur: '', u: 'gusto', p: 'casa', q: 0, sinCant: true };
+        continue;
+      }
       for (const it of r.ing) {
         if (it.length === 1) continue;
         const [q, u, nombre, pasillo] = it;
         const [sing, plur] = nombres(nombre);
         const p = pasillo === 'sob' ? 'bas' : pasillo;
-        const sinCant = p === 'sal' || p === 'bas' || q == null || u === 'gusto';
+        // Cucharadas de algo (jengibre, Maizena…) no se compran por cucharadas: solo el nombre
+        const sinCant = p === 'sal' || p === 'bas' || q == null || u === 'gusto' || u === 'cda' || u === 'cdta';
         const clave = `${p}|${norm(sing)}|${sinCant ? '' : u}`;
         const item = items[clave] || (items[clave] = { clave, sing, plur, u, p, q: 0, sinCant });
         if (!sinCant) item.q += q * k;
@@ -420,19 +463,35 @@ function tarjetaComida(fecha, slot) {
       <p>No hay recetas para esta comida con los aparatos que marcaste.</p></article>`;
   }
   const hecha = S.hist[r.id] && S.hist[r.id].ultima === fecha;
+  const meta = r.casa ? '🏠 Receta de la casa: tú ya la sabes hacer' : `⏱ ${tiempo(r)} · ${aparatosCorto(r)}`;
   return `<article class="card">
     <div class="mom">${m.e} ${m.t}</div>
     <button class="cc-main" data-act="ver" data-id="${r.id}">
       <span class="cc-emoji">${r.e}</span>
-      <span><span class="cc-nombre">${esc(r.n)}</span><span class="meta">⏱ ${tiempo(r)} · ${aparatosCorto(r)}</span></span>
+      <span><span class="cc-nombre">${esc(r.n)}</span><span class="meta">${meta}</span></span>
     </button>
     <div class="fila2">
-      <button class="btn pri" data-act="ver" data-id="${r.id}">Ver receta</button>
+      <button class="btn pri" data-act="ver" data-id="${r.id}">${r.casa ? 'Ver' : 'Ver receta'}</button>
       <button class="btn" data-act="otra" data-fecha="${fecha}" data-slot="${slot}">🔄 Dame otra</button>
     </div>
     ${hecha ? '<p class="hecha-hoy">✅ Ya la cocinaste hoy</p>'
-      : `<button class="btn claro" data-act="hecha" data-id="${r.id}">✅ Ya la cociné</button>`}
+      : `<button class="btn claro" data-act="hecha" data-id="${r.id}">✅ ${r.m.includes('bebida') ? 'Ya la preparé' : 'Ya la cociné'}</button>`}
   </article>`;
+}
+
+let vueltaIdeas = 0;
+function ideasDelDia(f) {
+  const enMenu = Object.values(S.plan[f] || {});
+  const lista = IDEAS.filter(r => (r.m.includes('almuerzo') || r.m.includes('comida')) && !S.oculta[r.id] && !enMenu.includes(r.id));
+  // Mismo orden todo el día; "Otras ideas" cambia la vuelta
+  let semilla = Math.floor(parse(f).getTime() / 86400000) + vueltaIdeas * 7919;
+  const azar = () => { semilla = (semilla * 9301 + 49297) % 233280; return semilla / 233280; };
+  // Tres ideas con proteínas distintas (no tres sopas de pollo)
+  const elegidas = [];
+  for (const [, r] of lista.map(r => [azar(), r]).sort((a, b) => a[0] - b[0])) {
+    if (elegidas.length < 3 && !elegidas.some(e => e.p === r.p)) elegidas.push(r);
+  }
+  return elegidas;
 }
 
 function vistaHoy() {
@@ -471,6 +530,17 @@ function vistaHoy() {
         <button class="btn" data-act="nuevoOtra">Otra idea</button>
       </div>
       <button class="btn suave" style="margin-top:.6rem" data-act="planear" data-id="${n.id}">📅 Cocinarla hoy o mañana</button>
+    </section>`;
+  }
+
+  // Ideas de la casa: "¿Por qué no hoy un ajiaco?"
+  const ideasHoy = ideasDelDia(f);
+  if (ideasHoy.length) {
+    html += `<section class="card nuevo">
+      <h3 style="margin:0 0 .3rem">💡 ¿Por qué no hoy ${esc(ideasHoy[0].art)}?</h3>
+      <p class="ayuda">Recetas de la casa. Toca una para ponerla en el menú.</p>
+      <div class="chips">${ideasHoy.map((r, i) => `<button class="chip ${i ? '' : 'on'}" data-act="planear" data-id="${r.id}">${r.e} ${esc(r.n)}</button>`).join('')}</div>
+      <button class="btn claro" data-act="otrasIdeas">🔄 Otras ideas</button>
     </section>`;
   }
 
@@ -586,36 +656,46 @@ function vistaMercado() {
 
 const FILTROS = [
   ['todas', 'Todas'], ['fav', '⭐ De siempre'], ['nuevas', '✨ Sin probar'],
-  ['desayuno', '🌅 Desayunos'], ['almuerzo', '🍽️ Almuerzos y comidas'],
+  ['desayuno', '🌅 Desayunos'], ['almuerzo', '🍽️ Almuerzos y comidas'], ['postre', '🍮 Postres'], ['bebida', '🥤 Para tomar'],
   ['pollo', '🐔 Pollo'], ['res', '🐄 Res'], ['cerdo', '🐖 Cerdo'], ['pescado', '🐟 Pescado'],
   ['granos', '🫘 Granos'], ['huevo', '🥚 Huevo'], ['olla', '🍲 Olla lenta'], ['freidora', '💨 Freidora'],
 ];
 
+function pasaFiltro(r, f) {
+  if (f === 'fav') return !!S.fav[r.id];
+  if (f === 'nuevas') return !(S.hist[r.id] && S.hist[r.id].veces);
+  if (f === 'desayuno' || f === 'postre' || f === 'bebida') return r.m.includes(f);
+  if (f === 'almuerzo') return r.m.includes('almuerzo') || r.m.includes('comida') || r.m.includes('acompañante');
+  if (PROTEINAS[f]) return r.p === f;
+  if (APARATOS[f]) return r.a.some(req => req.split('|').includes(f));
+  return true;
+}
+
 function vistaRecetas() {
+  // Solo los filtros que tienen recetas (los de siempre y sin probar, siempre)
+  const filtros = FILTROS.filter(([k]) => k === 'todas' || k === 'fav' || k === 'nuevas' || RECETAS.some(r => pasaFiltro(r, k)));
   return `<button class="btn grande suave" data-act="casa">🥕 ¿Qué tengo en casa?</button>
     <input class="campo" type="search" id="buscar" data-in="buscar" placeholder="🔎 Buscar receta…" value="${esc(filtro.q)}" style="margin-top:.8rem">
-    <div class="chips">${FILTROS.map(([k, t]) => `<button class="chip ${filtro.f === k ? 'on' : ''}" data-act="filtro" data-f="${k}">${t}</button>`).join('')}</div>
+    <div class="chips">${filtros.map(([k, t]) => `<button class="chip ${filtro.f === k ? 'on' : ''}" data-act="filtro" data-f="${k}">${t}</button>`).join('')}</div>
     <div id="listaRecetas">${listaRecetas()}</div>`;
 }
 
 function listaRecetas() {
   const q = norm(filtro.q.trim());
   const f = filtro.f;
-  const lista = RECETAS.filter(r => {
-    if (S.oculta[r.id]) return false;
-    if (q && !norm(r.n + ' ' + r.ing.map(i => i[2] || '').join(' ')).includes(q)) return false;
-    if (f === 'fav') return !!S.fav[r.id];
-    if (f === 'nuevas') return !(S.hist[r.id] && S.hist[r.id].veces);
-    if (f === 'desayuno') return r.m.includes('desayuno');
-    if (f === 'almuerzo') return r.m.includes('almuerzo') || r.m.includes('comida') || r.m.includes('acompañante');
-    if (PROTEINAS[f]) return r.p === f;
-    if (APARATOS[f]) return r.a.some(req => req.split('|').includes(f));
-    return true;
-  });
-  if (!lista.length) {
-    return `<p class="ayuda">${f === 'fav' ? 'Todavía no hay recetas de siempre. Cuando cocines una y te guste, toca ⭐ en la receta.' : 'No encontré recetas con eso.'}</p>`;
+  const lista = RECETAS.filter(r => !S.oculta[r.id] && pasaFiltro(r, f) &&
+    (!q || norm(r.n + ' ' + r.ing.map(i => i[2] || '').join(' ')).includes(q)));
+  let html = !lista.length
+    ? `<p class="ayuda">${f === 'fav' ? 'Todavía no hay recetas de siempre. Cuando cocines una y te guste, toca ⭐ en la receta.' : 'No encontré recetas con eso.'}</p>`
+    : `<p class="ayuda">${lista.length} receta${lista.length > 1 ? 's' : ''}</p>` + lista.map(r => filaReceta(r)).join('');
+  // Platos de la casa: solo el nombre, para ponerlos en el menú
+  const ideas = IDEAS.filter(r => !S.oculta[r.id] && (!q || norm(r.n).includes(q)) &&
+    (f === 'todas' || f === 'desayuno' || f === 'almuerzo' || (PROTEINAS[f] && r.p === f)) && pasaFiltro(r, f));
+  if (ideas.length) {
+    html += `<h3>🏠 Recetas de la casa</h3><p class="ayuda">Tú ya las sabes hacer. Toca una para ponerla en el menú.</p>
+      <div class="chips">${ideas.map(r => `<button class="chip" data-act="planear" data-id="${r.id}">${r.e} ${esc(r.n)}</button>`).join('')}</div>`;
   }
-  return `<p class="ayuda">${lista.length} receta${lista.length > 1 ? 's' : ''}</p>` + lista.map(r => filaReceta(r)).join('');
+  return html;
 }
 
 function filaReceta(r, extra = '') {
@@ -648,16 +728,23 @@ function vistaAjustes() {
       `<button class="btn ${S.letra === k ? 'on' : ''}" data-act="letra" data-k="${k}">${t}</button>`).join('')}
     </div></section>`;
 
-  html += `<section class="card"><h3>🥗 Bajar de peso (opcional)</h3>
-    <p class="ayuda">Si alguien lo activa, las recetas muestran cómo servir su plato más liviano y las comidas de la noche salen más livianas.</p>
-    ${S.dieta.map((p, i) => `<div class="persona-dieta">
+  const filaMeta = (p, i) => `<div class="persona-dieta">
       <input class="campo" data-in="nombreDieta" data-i="${i}" value="${esc(p.nombre)}" aria-label="Nombre">
       <label class="toggle"><input type="checkbox" data-cambio="dieta" data-i="${i}" ${p.on ? 'checked' : ''} aria-label="Activar para ${esc(p.nombre)}"></label>
-    </div>`).join('')}
+    </div>`;
+  html += `<section class="card"><h3>🥗 Bajar de peso (opcional)</h3>
+    <p class="ayuda">Si alguien lo activa, las recetas muestran cómo servir su plato más liviano y las comidas de la noche salen más livianas.</p>
+    ${S.dieta.map((p, i) => p.obj === 'bajar' ? filaMeta(p, i) : '').join('')}
     ${dietaOn() ? `<h3>Consejos</h3><ul class="lista-consejos">${CONSEJOS.map(c => `<li>${c}</li>`).join('')}</ul>` : ''}
   </section>`;
 
-  const ocultas = RECETAS.filter(r => S.oculta[r.id]);
+  html += `<section class="card"><h3>💪 Ganar músculo (opcional)</h3>
+    <p class="ayuda">Si está activo, cada receta dice cómo servir un plato con más proteína para esa persona. Comen lo mismo que los demás, solo cambia la porción.</p>
+    ${S.dieta.map((p, i) => p.obj === 'musculo' ? filaMeta(p, i) : '').join('')}
+    ${quienes('musculo').length ? `<h3>Consejos</h3><ul class="lista-consejos">${CONSEJOS_MUSCULO.map(c => `<li>${c}</li>`).join('')}</ul>` : ''}
+  </section>`;
+
+  const ocultas = [...RECETAS, ...IDEAS].filter(r => S.oculta[r.id]);
   if (ocultas.length) {
     html += `<section class="card"><h3>🙈 Recetas que no te gustaron</h3><p class="ayuda">No salen en el menú. Tócalas para volver a mostrarlas.</p>
       ${ocultas.map(r => `<button class="btn" style="margin-top:.5rem" data-act="mostrar" data-id="${r.id}">${r.e} ${esc(r.n)}</button>`).join('')}</section>`;
@@ -682,26 +769,56 @@ function vistaAjustes() {
 function abrirReceta(id) {
   const r = R[id];
   if (!r) return;
+  if (r.casa) { abrirHoja(htmlIdea(r)); return; }
   detalle = { id, k: S.personas, paso: -1 };
   const el = abrirHoja(htmlReceta(r), { alCerrar: () => { pararVoz(); soltarPantalla(); detalle = null; } });
   el.dataset.receta = id;
   pedirPantalla();
 }
 
+// Platos de la casa: no hay receta escrita, solo la idea y botones para usarla
+function htmlIdea(r) {
+  const plato = r.m.some(esPrincipal);
+  return `<div class="hoja-top"><button class="btn volver" data-act="cerrar">← Volver</button></div>
+    <div class="hoja-in">
+      <div class="det-cab"><div class="det-emoji">${r.e}</div><h2>${esc(r.n)}</h2>
+        <p class="meta">🏠 Receta de la casa: la haces como siempre.</p></div>
+      ${dietaOn() && plato ? `<div class="caja dieta"><h3>🥗 Para bajar de peso (${esc(y(quienes('bajar')))})</h3>
+        <p>Plato: la mitad verduras o ensalada, un cuarto la proteína y un cuarto de arroz, papa o arepa (no las tres).</p></div>` : ''}
+      ${quienes('musculo').length && plato ? `<div class="caja dieta"><h3>💪 Para ganar músculo (${esc(y(quienes('musculo')))})</h3>
+        <p>Porción y media de la proteína y un vaso de leche o yogur griego.</p></div>` : ''}
+      <a class="btn suave" style="margin:1rem 0" href="https://www.youtube.com/results?search_query=${encodeURIComponent('receta ' + r.n + ' colombiana')}" target="_blank" rel="noopener">▶️ Buscar videos de este plato</a>
+      <div class="pila">
+        <button class="btn ok grande" data-act="hecha" data-id="${r.id}">✅ Ya la cociné</button>
+        <button class="btn" data-act="planear" data-id="${r.id}">📅 Ponerla en el menú</button>
+        <button class="btn claro" data-act="noSugerir" data-id="${r.id}">🙅 No me la sugieras más</button>
+      </div>
+    </div>`;
+}
+
+function htmlVideo(r) {
+  if (r.v) {
+    return `<a class="video" href="https://www.youtube.com/watch?v=${r.v}" target="_blank" rel="noopener">
+      <img src="https://i.ytimg.com/vi/${r.v}/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()">
+      <span>▶️ Ver el video${r.o === 'h4s' ? '<small>Está en inglés: mira las manos, la receta en español está aquí abajo.</small>' : ''}</span></a>`;
+  }
+  if (r.vu) {
+    return `<a class="btn suave grande" style="margin:1rem 0" href="${esc(r.vu)}" target="_blank" rel="noopener">▶️ Ver el video de la receta</a>`;
+  }
+  const q = r.vq || `receta ${r.n}`;
+  return `<a class="btn suave" style="margin:1rem 0" href="https://www.youtube.com/results?search_query=${encodeURIComponent(q)}" target="_blank" rel="noopener">▶️ Buscar videos de esta receta</a>`;
+}
+
 function htmlReceta(r) {
   const nueva = !(S.hist[r.id] && S.hist[r.id].veces);
-  let video;
-  if (r.v) {
-    video = `<a class="video" href="https://www.youtube.com/watch?v=${r.v}" target="_blank" rel="noopener">
-      <img src="https://i.ytimg.com/vi/${r.v}/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()">
-      <span>▶️ Ver el video<small>Está en inglés: mira las manos, la receta en español está aquí abajo.</small></span></a>`;
-  } else {
-    const q = r.vq || `receta ${r.n} colombiana`;
-    video = `<a class="btn suave" style="margin:1rem 0" href="https://www.youtube.com/results?search_query=${encodeURIComponent(q)}" target="_blank" rel="noopener">▶️ Buscar videos de esta receta</a>`;
-  }
-  const dieta = dietaOn() ? `<div class="caja dieta"><h3>🥗 Para bajar de peso (${esc(y(quienesDieta()))})</h3>
+  const bebida = r.m.includes('bebida');
+  const video = htmlVideo(r);
+  const conPlato = !bebida && !r.m.includes('acompañante');
+  const dieta = dietaOn() && r.liv ? `<div class="caja dieta"><h3>🥗 Para bajar de peso (${esc(y(quienes('bajar')))})</h3>
       <p>${r.liv}</p>
-      <p class="ayuda">Plato: la mitad verduras, un cuarto proteína y un cuarto de arroz, papa o arepa.</p></div>` : '';
+      ${conPlato ? '<p class="ayuda">Plato: la mitad verduras, un cuarto proteína y un cuarto de arroz, papa o arepa.</p>' : ''}</div>` : '';
+  const musculo = quienes('musculo').length && conPlato ? `<div class="caja dieta"><h3>💪 Para ganar músculo (${esc(y(quienes('musculo')))})</h3>
+      <p>${r.mus || 'Porción y media de la proteína y un vaso de leche o yogur griego.'}</p></div>` : '';
   const voz = 'speechSynthesis' in window;
 
   return `<div class="hoja-top">
@@ -717,7 +834,7 @@ function htmlReceta(r) {
           ${S.fav[r.id] ? '<span class="etq fav">⭐ De siempre</span>' : ''}${nueva ? '<span class="etq nueva">✨ Sin probar</span>' : ''}
         </div>
         <p class="meta">${aparatosTexto(r)}</p>
-        <p class="meta">Aprox. ${r.kcal} calorías y ${r.prot} g de proteína por porción</p>
+        <p class="meta">${bebida ? `Aprox. ${r.kcal} calorías por vaso` : `Aprox. ${r.kcal} calorías y ${r.prot} g de proteína por porción`}</p>
       </div>
       ${r.lento ? `<div class="caja lento"><b>🍲 Olla lenta:</b> ${r.lento}. Empiézala con tiempo.</div>` : ''}
       ${puede(r) ? '' : `<div class="caja lento">Esta receta necesita ${falta(r)}.</div>`}
@@ -739,10 +856,11 @@ function htmlReceta(r) {
         <button class="btn" data-act="vozMover" data-d="1">Siguiente ⏭</button>
       </div>` : ''}
       ${dieta}
+      ${musculo}
       ${r.adel ? `<div class="caja"><h3>📦 Para adelantar</h3><p>${r.adel}</p></div>` : ''}
-      ${r.con ? `<div class="caja"><h3>🍽️ Acompáñala con</h3><p>${r.con}</p></div>` : ''}
+      ${r.con ? `<div class="caja"><h3>${bebida ? '🍽️ Para tomar con' : '🍽️ Acompáñala con'}</h3><p>${r.con}</p></div>` : ''}
       <div class="pila" style="margin-top:1.2rem">
-        <button class="btn ok grande" data-act="hecha" data-id="${r.id}">✅ Ya la cociné</button>
+        <button class="btn ok grande" data-act="hecha" data-id="${r.id}">✅ ${bebida ? 'Ya la preparé' : 'Ya la cociné'}</button>
         <button class="btn" data-act="planear" data-id="${r.id}">📅 Ponerla en el menú</button>
         <button class="btn wa" data-act="waReceta" data-id="${r.id}">📤 Enviar la receta por WhatsApp</button>
       </div>
@@ -898,7 +1016,7 @@ function htmlCasaRes() {
   if (!S.casa.length) return '<p class="ayuda">Todavía no has marcado nada.</p>';
   const res = [];
   for (const r of RECETAS) {
-    if (S.oculta[r.id] || !puede(r) || r.m.includes('acompañante')) continue;
+    if (S.oculta[r.id] || !puede(r) || r.m.includes('acompañante') || r.m.includes('bebida')) continue;
     const ps = principales(r);
     const tiene = ps.filter(p => p.chips.some(c => S.casa.includes(c)));
     if (!tiene.length) continue;
@@ -976,7 +1094,7 @@ function textoLista(desde, hasta, soloPendiente) {
 function textoReceta(r, k) {
   const ings = r.ing.map(it => it.length === 1 ? `\n_${it[0]}_` : `• ${lineaIng(it[0], it[1], it[2], k / 4)}`).join('\n');
   const pasos = r.pasos.map((p, i) => `${i + 1}. ${p}`).join('\n');
-  const video = r.v ? `\n▶️ Video: https://www.youtube.com/watch?v=${r.v}` : '';
+  const video = r.v ? `\n▶️ Video: https://www.youtube.com/watch?v=${r.v}` : r.vu ? `\n▶️ Video: ${r.vu}` : '';
   return `${r.e} *${r.n}*\n⏱ ${tiempo(r)} · Para ${k} persona${k > 1 ? 's' : ''}\n\n*Ingredientes*\n${ings}\n\n*Preparación*\n${pasos}${video}`;
 }
 
@@ -1037,7 +1155,7 @@ function marcarHecha(id) {
   const antes = (S.hist[id] && S.hist[id].veces) || 0;
   S.hist[id] = { veces: antes + 1, ultima: hoy() };
   guardar();
-  if (!antes && !S.fav[id]) {
+  if (!antes && !S.fav[id] && !r.casa) {
     preguntar(`${r.e} ¿Te gustó?`, `¿Agrego <b>${esc(r.n)}</b> a tus recetas de siempre? Así sale más seguido en el menú.`, [
       { t: '⭐ Sí, me encantó', clase: 'ok', fn: () => { S.fav[id] = true; guardar(); refrescar(); toast('⭐ Agregada a tus recetas de siempre'); } },
       { t: '🙂 Más o menos', fn: () => { refrescar(); toast('Listo, anotado'); } },
@@ -1093,6 +1211,15 @@ const ACCIONES = {
     toast(`🔄 ${r.e} ${r.n}`);
   },
   hecha: d => marcarHecha(d.id),
+  otrasIdeas: () => { vueltaIdeas++; render(); },
+  noSugerir: d => {
+    S.oculta[d.id] = true;
+    delete S.fav[d.id];
+    guardar();
+    history.back();
+    render();
+    toast('Listo, no te la vuelvo a sugerir');
+  },
   nuevoOtra: () => {
     const r = ideaNueva([S.nuevo.id]);
     S.nuevo = { fecha: hoy(), id: r ? r.id : '' };

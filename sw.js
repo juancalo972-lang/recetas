@@ -1,6 +1,6 @@
 // Guarda la app en el celular para que abra sin internet.
 // Al publicar cambios, sube el número de CACHE para que los celulares bajen la versión nueva.
-const CACHE = 'que-cocino-v1';
+const CACHE = 'que-cocino-v2';
 const ARCHIVOS = [
   './',
   'index.html',
