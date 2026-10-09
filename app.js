@@ -2,7 +2,7 @@
 /* ¿Qué cocino hoy? — recetas, menú de la semana y lista de mercado.
    Todo se guarda en el celular (localStorage); no hay servidor ni cuentas. */
 
-const VERSION = '1.6';
+const VERSION = '1.7';
 const CLAVE = 'que-cocino-hoy-v1';
 
 const MOMENTOS = {
@@ -882,7 +882,7 @@ function htmlVideo(r) {
   }
   if (r.vu) {
     return `<a class="btn suave grande" style="margin:1rem 0 .3rem" href="${esc(r.vu)}" target="_blank" rel="noopener">▶️ Ver el video de la receta</a>`
-      + (r.de ? `<p class="ayuda" style="text-align:center;margin:0 0 1rem">Receta de ${esc(r.de)}</p>` : '');
+      + (r.de ? `<p class="ayuda" style="text-align:center;margin:0 0 1rem">Receta de ${esc(r.de)}${r.ingles ? ' · el video está en inglés: mira las manos' : ''}</p>` : '');
   }
   const q = r.vq || `receta ${r.n}`;
   return `<a class="btn suave" style="margin:1rem 0" href="https://www.youtube.com/results?search_query=${encodeURIComponent(q)}" target="_blank" rel="noopener">▶️ Buscar videos de esta receta</a>`;

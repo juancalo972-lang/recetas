@@ -11,7 +11,7 @@
 // fv: cuál miniatura del video usar de foto (por defecto oardefault)
 // a: aparatos que necesita. "freidora|horno" = sirve cualquiera de los dos.
 // o: 'h4s' = inspirada en @hunt4shredz (video en inglés) · 'fb' = video de Facebook · 'juan' = idea de Juan
-// de: quién hizo el video · reposo: tiempo de nevera (avenas trasnochadas, etc.) · foto: archivo en fotos/
+// ingles: el video está en inglés · de: quién hizo el video · reposo: tiempo de nevera (avenas trasnochadas, etc.) · foto: archivo en fotos/
 // Video: v = id de YouTube · vu = link de otro sitio (Facebook…) · vq = búsqueda en YouTube
 // liv = cómo servirla para bajar de peso · mus = cómo servirla para ganar músculo
 // kcal / prot: aproximados por porción, sin acompañantes.
@@ -645,6 +645,32 @@ const RECETAS = [
     mus: 'Con la proteína en polvo en la mezcla (o leche en polvo), porción y media y un vaso de leche.',
     adel: 'Se hace un día y queda para toda la semana: dura 4 o 5 días tapada en la nevera. Se come fría o tibia.',
     con: 'Un café o un vaso de leche. También sirve de postre.',
+  },
+
+  {
+    id: 'volcan-chocolate-cottage', o: 'fb', vu: 'https://www.facebook.com/watch/?v=1521874895906563', de: 'Shred Happens', ingles: true, foto: 'fotos/volcan-chocolate.jpg',
+    n: 'Volcán de chocolate con queso cottage', e: '🌋',
+    m: ['postre'], p: 'lacteo', a: ['horno', 'licuadora'], t: 45, d: 'Fácil', kcal: 200, prot: 21,
+    ing: [
+      [450, 'g', 'queso cottage (o requesón)', 'lac'],
+      [4, 'u', 'huevo|huevos', 'lac'],
+      [6, 'cda', 'cacao en polvo sin azúcar', 'sal'],
+      [8, 'cda', 'stevia granulada (o al gusto)', 'sal'],
+      [1, 'cdta', 'esencia de vainilla', 'sal'],
+      [4, 'cda', 'chispas de chocolate semiamargo', 'otr'],
+    ],
+    pasos: [
+      'Prende el horno a 180 °C.',
+      'Licúa el queso cottage hasta que quede liso, sin grumitos. Pásalo a un recipiente que sirva para horno (2 medianos, o tacitas individuales).',
+      'Agrega los huevos, el cacao, la stevia y un chorrito de vainilla, y mezcla hasta que quede una masa lisa. La stevia tiene que ser en polvo o granulada, no líquida: eso es clave.',
+      'Riega las chispas de chocolate encima y mueve el recipiente para que se hundan un poco: así el centro queda derretido, como un volcán.',
+      'Hornea de 33 a 35 minutos (en tacitas individuales, de 20 a 25). Está listo cuando los bordes están firmes y el centro todavía tiembla un poquito.',
+      'Déjalo reposar 2 o 3 minutos y cómetelo tibio.',
+    ],
+    liv: 'Ya es liviano: unas 200 calorías por porción. Con pocas chispas de chocolate (o sin ellas) queda todavía más liviano.',
+    mus: 'Doble porción para ti: unos 40 g de proteína. Sirve de postre o después del gimnasio.',
+    adel: 'La mezcla se puede dejar lista en la nevera desde la mañana y hornearla en la noche. Ya horneado dura 3 días en la nevera: se come frío o se calienta 5 minutos en el horno o la freidora.',
+    con: 'Unas fresas o una cucharada de yogur griego encima.',
   },
 
   // ───────────── Salsas y aderezos (no pican) ─────────────
