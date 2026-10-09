@@ -2,7 +2,7 @@
 /* ¿Qué cocino hoy? — recetas, menú de la semana y lista de mercado.
    Todo se guarda en el celular (localStorage); no hay servidor ni cuentas. */
 
-const VERSION = '1.2';
+const VERSION = '1.3';
 const CLAVE = 'que-cocino-hoy-v1';
 
 const MOMENTOS = {
@@ -251,7 +251,7 @@ function falta(r) {
   return r.a.filter(req => !req.split('|').some(x => S.aparatos[x]))
     .map(req => req.split('|').map(x => APARATOS[x][0].toLowerCase()).join(' u ')).join(' y ');
 }
-function tiempo(r) { return r.lento ? `${r.t} min + olla lenta` : `${r.t} min`; }
+function tiempo(r) { return r.lento ? `${r.t} min + olla lenta` : r.reposo ? `${r.t} min + reposo` : `${r.t} min`; }
 
 function toast(msg) {
   const t = $('#toast');
@@ -719,7 +719,7 @@ function vistaMercado() {
 
 const FILTROS = [
   ['todas', 'Todas'], ['fav', '⭐ De siempre'], ['nuevas', '✨ Sin probar'],
-  ['desayuno', '🌅 Desayunos'], ['almuerzo', '🍽️ Almuerzos y comidas'], ['postre', '🍮 Postres'], ['salsa', '🥣 Salsas y aderezos'], ['bebida', '🥤 Para tomar'],
+  ['desayuno', '🌅 Desayunos'], ['almuerzo', '🍽️ Almuerzos y comidas'], ['postre', '🍮 Postres y snacks'], ['salsa', '🥣 Salsas y aderezos'], ['bebida', '🥤 Para tomar'],
   ['pollo', '🐔 Pollo'], ['res', '🐄 Res'], ['cerdo', '🐖 Cerdo'], ['pescado', '🐟 Pescado'],
   ['granos', '🫘 Granos'], ['huevo', '🥚 Huevo'], ['olla', '🍲 Olla lenta'], ['freidora', '💨 Freidora'],
 ];
@@ -880,7 +880,8 @@ function htmlVideo(r) {
       <span>▶️ Ver el video${r.o === 'h4s' ? '<small>Está en inglés: mira las manos, la receta en español está aquí abajo.</small>' : ''}</span></a>`;
   }
   if (r.vu) {
-    return `<a class="btn suave grande" style="margin:1rem 0" href="${esc(r.vu)}" target="_blank" rel="noopener">▶️ Ver el video de la receta</a>`;
+    return `<a class="btn suave grande" style="margin:1rem 0 .3rem" href="${esc(r.vu)}" target="_blank" rel="noopener">▶️ Ver el video de la receta</a>`
+      + (r.de ? `<p class="ayuda" style="text-align:center;margin:0 0 1rem">Receta de ${esc(r.de)}</p>` : '');
   }
   const q = r.vq || `receta ${r.n}`;
   return `<a class="btn suave" style="margin:1rem 0" href="https://www.youtube.com/results?search_query=${encodeURIComponent(q)}" target="_blank" rel="noopener">▶️ Buscar videos de esta receta</a>`;
@@ -915,6 +916,7 @@ function htmlReceta(r) {
         <p class="meta">${bebida ? `Aprox. ${r.kcal} calorías por vaso` : salsa ? `Aprox. ${r.kcal} calorías por porción (3 o 4 cucharadas)` : `Aprox. ${r.kcal} calorías y ${r.prot} g de proteína por porción`}</p>
       </div>
       ${r.lento ? `<div class="caja lento"><b>🍲 Olla lenta:</b> ${r.lento}. Empiézala con tiempo.</div>` : ''}
+      ${r.reposo ? `<div class="caja lento"><b>🌙 Reposo:</b> ${r.reposo}. Prepárala desde la noche anterior.</div>` : ''}
       ${puede(r) ? '' : `<div class="caja lento">Esta receta necesita ${falta(r)}.</div>`}
       ${video}
       <h3>🛒 Ingredientes</h3>

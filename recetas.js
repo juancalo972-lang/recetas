@@ -10,7 +10,8 @@
 // pica: cómo hacerla picante para el que le guste · salsas: ids de salsas que le quedan bien
 // fv: cuál miniatura del video usar de foto (por defecto oardefault)
 // a: aparatos que necesita. "freidora|horno" = sirve cualquiera de los dos.
-// o: 'h4s' = inspirada en @hunt4shredz (video en inglés) · 'juan' = idea de Juan
+// o: 'h4s' = inspirada en @hunt4shredz (video en inglés) · 'fb' = video de Facebook · 'juan' = idea de Juan
+// de: quién hizo el video · reposo: tiempo de nevera (avenas trasnochadas, etc.)
 // Video: v = id de YouTube · vu = link de otro sitio (Facebook…) · vq = búsqueda en YouTube
 // liv = cómo servirla para bajar de peso · mus = cómo servirla para ganar músculo
 // kcal / prot: aproximados por porción, sin acompañantes.
@@ -543,6 +544,39 @@ const RECETAS = [
     mus: 'Dos hot pockets y un vaso de leche.',
     adel: 'Se arman el día anterior y se guardan crudos en la nevera, o se congelan.',
     con: 'Palitos de apio y zanahoria con salsa de yogur.',
+  },
+
+  // ───────────── Desayunos, snacks y postres (videos que manda Juan) ─────────────
+  {
+    id: 'avena-brownie', o: 'fb', vu: 'https://www.facebook.com/watch/?v=2182763055620129', de: 'Alejandro Méndez García',
+    n: 'Avena trasnochada de brownie', e: '🍫',
+    m: ['desayuno', 'postre'], p: 'lacteo', a: [], t: 10, reposo: 'toda la noche en la nevera (si hay afán, mínimo 15 minutos)', d: 'Fácil', kcal: 315, prot: 17,
+    ing: [
+      [2, 'taza', 'avena en hojuelas', 'gra'],
+      [6, 'cda', 'cacao en polvo sin azúcar', 'sal'],
+      [4, 'cda', 'stevia granulada (o al gusto)', 'sal'],
+      [2, 'taza', 'leche descremada o deslactosada', 'lac'],
+      [1, 'cdta', 'esencia de vainilla', 'sal'],
+      [null, 'gusto', 'pizca de sal gruesa', 'bas'],
+      [4, 'cda', 'chispas de chocolate semiamargo', 'otr'],
+      ['Cubierta cremosa (tipo frosting)'],
+      [1, 'taza', 'yogur griego natural sin azúcar', 'lac'],
+      [2, 'cda', 'cacao en polvo sin azúcar', 'sal'],
+      [2, 'cda', 'stevia granulada (o al gusto)', 'sal'],
+      [0.5, 'cdta', 'esencia de vainilla', 'sal'],
+    ],
+    pasos: [
+      'En un tazón mezcla en seco la avena, el cacao y la stevia, para que el cacao no haga grumos.',
+      'Agrega la leche, unas gotas de vainilla y una pizca de sal gruesa (la sal es lo que le da el sabor a brownie). Mezcla muy bien.',
+      'Agrega la mitad de las chispas de chocolate y reparte en frascos o vasos con tapa, uno por persona.',
+      'Cubierta: mezcla el yogur griego con el cacao, la stevia y la vainilla hasta que quede cremoso, como un frosting.',
+      'Pon la cubierta encima de cada frasco y termina con el resto de las chispas.',
+      'Tapa y deja en la nevera toda la noche (si hay afán, mínimo 15 minutos). Se come fría.',
+    ],
+    liv: 'Media taza de avena por persona, con leche descremada y sin chispas de chocolate (o solo unas poquitas encima).',
+    mus: 'El frasco completo como en el video: 1 taza de avena con 1 taza de leche (o leche con proteína) y la cubierta de yogur. Sirve antes del gimnasio.',
+    adel: 'Se arman la noche anterior y duran hasta 3 días tapadas en la nevera: puedes dejar listos los desayunos de varios días.',
+    con: 'Un café o una fruta. También sirve de postre o de algo para el antojo.',
   },
 
   // ───────────── Salsas y aderezos (no pican) ─────────────
