@@ -2,7 +2,7 @@
 /* ¿Qué cocino hoy? — recetas, menú de la semana y lista de mercado.
    Todo se guarda en el celular (localStorage); no hay servidor ni cuentas. */
 
-const VERSION = '1.10';
+const VERSION = '1.11';
 const CLAVE = 'que-cocino-hoy-v1';
 
 const MOMENTOS = {
@@ -436,7 +436,6 @@ function ideaNueva(excluir = []) {
 
 function listaMercado(desde, hasta) {
   const items = {};
-  const k = S.personas / 4;
   for (let f = desde; f <= hasta; f = sumar(f, 1)) {
     const dia = S.plan[f];
     if (!dia) continue;
@@ -449,6 +448,7 @@ function listaMercado(desde, hasta) {
         items[clave] = { clave, sing: `${r.n} (lo de siempre)`, plur: '', u: 'gusto', p: 'casa', q: 0, sinCant: true };
         continue;
       }
+      const k = escala(r, S.personas);
       for (const it of r.ing) {
         if (it.length === 1) continue;
         const [q, u, nombre, pasillo] = it;
@@ -921,11 +921,11 @@ function htmlReceta(r) {
       ${puede(r) ? '' : `<div class="caja lento">Esta receta necesita ${falta(r)}.</div>`}
       ${video}
       <h3>🛒 Ingredientes</h3>
-      <div class="porciones">
+      ${r.fija ? `<p class="meta" style="text-align:center">${esc(r.fija)}</p>` : `<div class="porciones">
         <button class="btn" data-act="porciones" data-d="-1" aria-label="Menos personas">−</button>
         <b id="porcTxt">${textoPorciones()}</b>
         <button class="btn" data-act="porciones" data-d="1" aria-label="Más personas">+</button>
-      </div>
+      </div>`}
       <ul class="ings" id="ings">${htmlIngredientes(r)}</ul>
       ${voz ? `<button class="btn suave" style="margin-top:.8rem" data-act="vozIng">🔊 Escuchar los ingredientes</button>` : ''}
       <h3>👩‍🍳 Preparación</h3>
@@ -950,12 +950,15 @@ function htmlReceta(r) {
     </div>`;
 }
 
+// Recetas de una sola tanda (un molde de brownies) no cambian con el número de personas
+const escala = (r, personas) => r.fija ? 1 : personas / 4;
+
 function textoPorciones() {
   return `Para ${detalle.k} persona${detalle.k > 1 ? 's' : ''}`;
 }
 
 function htmlIngredientes(r) {
-  const k = detalle.k / 4;
+  const k = escala(r, detalle.k);
   return r.ing.map(it => it.length === 1
     ? `<li class="sub">${esc(it[0])}</li>`
     : `<li><label><input type="checkbox"><span>${esc(lineaIng(it[0], it[1], it[2], k))}</span></label></li>`).join('');
@@ -1220,7 +1223,7 @@ function textoLista(desde, hasta, soloPendiente) {
 }
 
 function textoReceta(r, k) {
-  const ings = r.ing.map(it => it.length === 1 ? `\n_${it[0]}_` : `• ${lineaIng(it[0], it[1], it[2], k / 4)}`).join('\n');
+  const ings = r.ing.map(it => it.length === 1 ? `\n_${it[0]}_` : `• ${lineaIng(it[0], it[1], it[2], escala(r, k))}`).join('\n');
   const pasos = r.pasos.map((p, i) => `${i + 1}. ${p}`).join('\n');
   const video = r.v ? `\n▶️ Video: https://www.youtube.com/watch?v=${r.v}` : r.vu ? `\n▶️ Video: ${r.vu}` : '';
   return `${r.e} *${r.n}*\n⏱ ${tiempo(r)} · Para ${k} persona${k > 1 ? 's' : ''}\n\n*Ingredientes*\n${ings}\n\n*Preparación*\n${pasos}${video}`;
@@ -1458,13 +1461,14 @@ const ACCIONES = {
   porciones: d => {
     detalle.k = Math.min(20, Math.max(1, detalle.k + +d.d));
     const hoja = document.querySelector(`.hoja[data-receta="${detalle.id}"]`);
-    hoja.querySelector('#porcTxt').textContent = textoPorciones();
+    const txt = hoja.querySelector('#porcTxt');
+    if (txt) txt.textContent = textoPorciones();
     hoja.querySelector('#ings').innerHTML = htmlIngredientes(R[detalle.id]);
   },
   vozIng: () => {
     const r = R[detalle.id];
-    const k = detalle.k / 4;
-    hablar(`Ingredientes para ${detalle.k} persona${detalle.k > 1 ? 's' : ''}. ` +
+    const k = escala(r, detalle.k);
+    hablar((r.fija ? 'Ingredientes. ' : `Ingredientes para ${detalle.k} persona${detalle.k > 1 ? 's' : ''}. `) +
       r.ing.map(it => it.length === 1 ? it[0] + ':' : lineaIng(it[0], it[1], it[2], k)).join('. ') + '.');
   },
   vozPaso: d => leerPaso(+d.i),

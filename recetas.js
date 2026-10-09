@@ -11,6 +11,7 @@
 // fv: cuál miniatura del video usar de foto (por defecto oardefault)
 // a: aparatos que necesita. "freidora|horno" = sirve cualquiera de los dos.
 // o: 'h4s' = inspirada en @hunt4shredz (video en inglés) · 'fb' = video de Facebook · 'juan' = idea de Juan
+// fija: texto = receta de una sola tanda, no cambia con las personas
 // ingles: el video está en inglés · de: quién hizo el video · reposo: tiempo de nevera (avenas trasnochadas, etc.) · foto: archivo en fotos/
 // Video: v = id de YouTube · vu = link de otro sitio (Facebook…) · vq = búsqueda en YouTube
 // liv = cómo servirla para bajar de peso · mus = cómo servirla para ganar músculo
@@ -734,6 +735,38 @@ const RECETAS = [
     mus: 'El frasco completo, como en la receta: unos 55 g de proteína con la proteína en polvo (unos 35 g sin ella). Perfecto de desayuno antes del gimnasio.',
     adel: 'Se prepara la noche anterior, y puedes dejar listos varios frascos: duran 3 o 4 días tapados en la nevera.',
     con: 'Con un café. Si no consigues proteína en polvo, déjala por fuera: queda igual de rico, con menos proteína. El yogur griego puede ser skyr.',
+  },
+
+  {
+    id: 'brownies-frijol-negro', o: 'fb', vu: 'https://www.facebook.com/watch/?v=1375150824602933', de: 'Live Eat Learn (Sarah Bond, nutricionista)', ingles: true,
+    fija: 'Una sola tanda: un molde de 16 brownies (no se parte a la mitad)',
+    n: 'Brownies de frijol negro (sin harina)', e: '🍫',
+    m: ['postre'], p: 'granos', a: ['horno', 'licuadora'], t: 55, d: 'Fácil', kcal: 120, prot: 4,
+    ing: [
+      [1, 'u', 'lata de frijol negro (425 g), enjuagada y escurrida|latas de frijol negro (425 g), enjuagadas y escurridas', 'otr'],
+      [3, 'u', 'huevo|huevos', 'lac'],
+      [3, 'cda', 'aceite vegetal (de girasol o canola)', 'bas'],
+      [1, 'cdta', 'esencia de vainilla', 'sal'],
+      [0.25, 'taza', 'cacao en polvo sin azúcar', 'sal'],
+      [120, 'g', 'azúcar (o la mitad de azúcar y la mitad de stevia granulada)', 'gra'],
+      [0.5, 'cdta', 'polvo de hornear', 'gra'],
+      [0.25, 'cdta', 'sal', 'bas'],
+      [60, 'g', 'chocolate semiamargo en chispas o picado', 'otr'],
+      [1, 'cdta', 'café instantáneo (opcional)', 'sal'],
+    ],
+    pasos: [
+      'Prende el horno a 175 °C. Engrasa un molde cuadrado de 20 a 23 cm y fórralo con papel de hornear.',
+      'Enjuaga muy bien los frijoles negros enlatados y escúrrelos. Licúalos o procésalos hasta que quede una pasta; mientras más lisa, más suaves quedan los brownies.',
+      'Pasa la pasta a un tazón grande y mézclala con los huevos, el aceite y la vainilla (o licúa todo junto, así queda más liso).',
+      'En otro tazón mezcla el cacao, el azúcar, el polvo de hornear, la sal y el café si vas a usar. Agrégalo a la mezcla de frijoles y revuelve.',
+      'Agrega las chispas de chocolate (guarda un puñado). Vierte la masa en el molde.',
+      'Hornea de 30 a 40 minutos. A los 15 minutos riega el puñado de chocolate que guardaste encima. Están listos cuando los bordes se ven firmes y el centro apenas tiembla; el palillo puede salir un poco húmedo.',
+      'Déjalos enfriar del todo antes de cortar en 16 cuadros.',
+    ],
+    liv: 'Un cuadro (y como mucho dos) de los 16, con una fruta. Con la mitad del azúcar cambiada por stevia salen todavía más livianos.',
+    mus: 'Dos o tres brownies con un vaso de leche o un yogur griego: aportan proteína y fibra de los frijoles.',
+    adel: 'Duran hasta 7 días en la nevera y 3 meses en el congelador. Haz una tanda el domingo y tienes postre para toda la semana.',
+    con: 'Un vaso de leche, o con una cucharada de yogur griego encima. Nadie nota que lleva frijoles.',
   },
 
   // ───────────── Salsas y aderezos (no pican) ─────────────
