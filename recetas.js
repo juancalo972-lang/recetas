@@ -809,6 +809,46 @@ const RECETAS = [
     con: 'Un café o una fruta.',
   },
 
+  {
+    id: 'avena-zanahoria-proteica', o: 'fb', vu: 'https://www.facebook.com/watch/?v=2331510814253401', de: 'Rooted with Syd', ingles: true, foto: 'fotos/avena-zanahoria-proteica.jpg',
+    n: 'Avena horneada de zanahoria alta en proteína (con cubierta de cottage)', e: '🥕',
+    m: ['desayuno', 'postre'], p: 'huevo', a: ['horno'], t: 50, d: 'Fácil', kcal: 470, prot: 34,
+    ing: [
+      ['Avena horneada'],
+      [2, 'u', 'banano maduro|bananos maduros (2 a 3)', 'ver'],
+      [2, 'u', 'huevo|huevos', 'lac'],
+      [0.75, 'taza', 'leche (la que prefieras)', 'lac'],
+      [0.5, 'taza', 'yogur griego natural sin azúcar', 'lac'],
+      [2, 'taza', 'avena en hojuelas', 'gra'],
+      [2, 'u', 'medida de proteína en polvo sabor vainilla (opcional)|medidas de proteína en polvo sabor vainilla (opcional)', 'otr'],
+      [1, 'taza', 'zanahoria rallada', 'ver'],
+      [0.5, 'taza', 'nueces o pecanas picadas', 'otr'],
+      [2, 'cda', 'miel de abejas', 'sal'],
+      [1, 'cdta', 'canela en polvo', 'bas'],
+      [0.25, 'cdta', 'jengibre en polvo', 'bas'],
+      [0.25, 'cdta', 'nuez moscada', 'bas'],
+      [1, 'cdta', 'polvo de hornear', 'gra'],
+      [null, 'gusto', 'pizca de sal', 'bas'],
+      ['Cubierta cremosa'],
+      [1, 'taza', 'queso cottage (o requesón)', 'lac'],
+      [2, 'cda', 'yogur griego natural sin azúcar', 'lac'],
+      [2, 'cda', 'miel de abejas', 'sal'],
+      [null, 'gusto', 'un chorrito de vainilla y canela', 'sal'],
+    ],
+    pasos: [
+      'Prende el horno a 175 °C. Engrasa un molde cuadrado de unos 20 cm (8 x 8 pulgadas).',
+      'En un tazón grande pisa los bananos con un tenedor. Agrega los huevos, la leche y el yogur, y mezcla.',
+      'Agrega la avena, la proteína en polvo, la zanahoria rallada, las nueces, la miel, la canela, el jengibre, la nuez moscada, el polvo de hornear y una pizca de sal. Mezcla hasta que quede todo integrado.',
+      'Vierte en el molde y hornea de 30 a 35 minutos.',
+      'Cubierta: licúa el queso cottage con el yogur, la miel, un chorrito de vainilla y canela hasta que quede completamente lisa.',
+      'Deja enfriar la avena, cúbrela con la crema y corta en 4 porciones. Si quieres, guarda la crema aparte y ponla porción por porción.',
+    ],
+    liv: 'Media porción (u 8 cuadros del molde, uno por día) con la crema de cottage. Sin proteína en polvo y con menos nueces baja bastante de calorías.',
+    mus: 'Una porción completa de las 4: unos 34 g de proteína con la proteína en polvo (cerca de 20 g sin ella). Perfecta de desayuno antes del gimnasio.',
+    adel: 'Es ideal para dejar listos varios desayunos: dura 4 o 5 días en la nevera. La crema se puede guardar aparte.',
+    con: 'Un café o un vaso de leche. Si no tienes proteína en polvo, déjala por fuera: queda igual de rica, con menos proteína.',
+  },
+
   // ───────────── Salsas y aderezos (no pican) ─────────────
   // Cantidades para 4 porciones; una porción son unas 3 o 4 cucharadas.
   {
