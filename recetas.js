@@ -11,7 +11,7 @@
 // fv: cuál miniatura del video usar de foto (por defecto oardefault)
 // a: aparatos que necesita. "freidora|horno" = sirve cualquiera de los dos.
 // o: 'h4s' = inspirada en @hunt4shredz (video en inglés) · 'fb' = video de Facebook · 'juan' = idea de Juan
-// de: quién hizo el video · reposo: tiempo de nevera (avenas trasnochadas, etc.)
+// de: quién hizo el video · reposo: tiempo de nevera (avenas trasnochadas, etc.) · foto: archivo en fotos/
 // Video: v = id de YouTube · vu = link de otro sitio (Facebook…) · vq = búsqueda en YouTube
 // liv = cómo servirla para bajar de peso · mus = cómo servirla para ganar músculo
 // kcal / prot: aproximados por porción, sin acompañantes.
@@ -548,7 +548,7 @@ const RECETAS = [
 
   // ───────────── Desayunos, snacks y postres (videos que manda Juan) ─────────────
   {
-    id: 'avena-brownie', o: 'fb', vu: 'https://www.facebook.com/watch/?v=2182763055620129', de: 'Alejandro Méndez García',
+    id: 'avena-brownie', o: 'fb', vu: 'https://www.facebook.com/watch/?v=2182763055620129', de: 'Alejandro Méndez García', foto: 'fotos/avena-brownie.jpg',
     n: 'Avena trasnochada de brownie', e: '🍫',
     m: ['desayuno', 'postre'], p: 'lacteo', a: [], t: 10, reposo: 'toda la noche en la nevera (si hay afán, mínimo 15 minutos)', d: 'Fácil', kcal: 315, prot: 17,
     ing: [

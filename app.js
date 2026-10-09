@@ -2,7 +2,7 @@
 /* ¿Qué cocino hoy? — recetas, menú de la semana y lista de mercado.
    Todo se guarda en el celular (localStorage); no hay servidor ni cuentas. */
 
-const VERSION = '1.3';
+const VERSION = '1.4';
 const CLAVE = 'que-cocino-hoy-v1';
 
 const MOMENTOS = {
@@ -131,6 +131,7 @@ function guardarFotos() {
 }
 function fotoDe(r) {
   if (FOTOS[r.id]) return FOTOS[r.id];
+  if (r.foto) return r.foto;
   if (r.v) return `https://i.ytimg.com/vi/${r.v}/${r.fv || 'oardefault'}.jpg`;
   return '';
 }
