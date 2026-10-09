@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es" data-letra="grande">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#C2410C">
+  <meta name="description" content="Recetas de la casa: qué cocinar hoy, menú de la semana y lista de mercado.">
+  <title>¿Qué cocino hoy?</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="top-in">
+      <span class="logo" aria-hidden="true">🍲</span>
+      <div>
+        <h1>¿Qué cocino hoy?</h1>
+        <p id="hoyFecha"></p>
+      </div>
+    </div>
+  </header>
+
+  <main id="vista" class="vista"></main>
+
+  <nav class="tabs" id="tabs" aria-label="Secciones">
+    <button data-act="tab" data-tab="hoy" class="on"><span aria-hidden="true">🏠</span>Hoy</button>
+    <button data-act="tab" data-tab="semana"><span aria-hidden="true">📅</span>Semana</button>
+    <button data-act="tab" data-tab="mercado"><span aria-hidden="true">🛒</span>Mercado</button>
+    <button data-act="tab" data-tab="recetas"><span aria-hidden="true">📖</span>Recetas</button>
+    <button data-act="tab" data-tab="ajustes"><span aria-hidden="true">⚙️</span>Ajustes</button>
+  </nav>
+
+  <div id="hojas"></div>
+  <div id="modal" class="modal" hidden></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <input type="file" id="archivo" accept=".json,application/json" hidden>
+  <section id="imprimir" aria-hidden="true"></section>
+
+  <script src="recetas.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
