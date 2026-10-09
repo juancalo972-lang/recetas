@@ -700,6 +700,38 @@ const RECETAS = [
     con: 'Unas fresas o frambuesas encima, o un poquito de yogur griego.',
   },
 
+  {
+    id: 'postre-snickers-proteico', o: 'fb', vu: 'https://www.facebook.com/share/r/1AFwWwAxgs/', de: 'Cooksana Meals', foto: 'fotos/postre-snickers.jpg',
+    n: 'Postre tipo Snickers alto en proteína', e: '🥜',
+    m: ['postre', 'desayuno'], p: 'lacteo', a: ['horno'], t: 40, reposo: 'unas 2 horas en la nevera (o toda la noche)', d: 'Media', kcal: 350, prot: 16,
+    ing: [
+      ['Base de avena y chocolate'],
+      [2, 'u', 'banano maduro|bananos maduros', 'ver'],
+      [2, 'u', 'huevo|huevos', 'lac'],
+      [1, 'taza', 'avena en hojuelas', 'gra'],
+      [2, 'cda', 'cacao en polvo sin azúcar', 'sal'],
+      ['Crema de yogur y maní'],
+      [1.5, 'taza', 'yogur griego natural sin azúcar', 'lac'],
+      [3, 'cda', 'mantequilla de maní', 'otr'],
+      ['Cubierta'],
+      [3, 'cda', 'maní picado (sin sal)', 'otr'],
+      [60, 'g', 'chocolate semiamargo', 'otr'],
+    ],
+    pasos: [
+      'Importante: este video no dice las cantidades; las de esta receta son aproximadas, calculadas por lo que se ve. La primera vez pruébala y ajusta a tu gusto.',
+      'Prende el horno a 180 °C. En un recipiente que sirva para horno (unos 20 x 15 cm) pisa los bananos con un tenedor. Agrega los huevos, la avena y el cacao, y mezcla hasta que todo quede integrado.',
+      'Hornea unos 20 minutos, hasta que la base esté firme. Déjala enfriar por completo.',
+      'Crema: mezcla el yogur griego con una cucharada de mantequilla de maní hasta que quede lisa. Extiéndela sobre la base fría.',
+      'Encima echa un hilito de mantequilla de maní (la que queda, unas 2 cucharadas, calentada unos segundos para que corra) y riega el maní picado.',
+      'Derrite el chocolate a baño de María o en el microondas, de a 20 segundos, y vierte sobre todo. Lleva a la nevera unas 2 horas para que el chocolate endurezca.',
+      'Para servir, rompe el chocolate con la cuchara y toma de todas las capas: base, crema, maní y chocolate.',
+    ],
+    liv: 'Un cuarto del postre por persona, con yogur griego sin azúcar y solo la mitad del chocolate.',
+    mus: 'Porción y media, o la mitad del postre, con un vaso de leche. El yogur griego, los huevos y la avena aportan la proteína.',
+    adel: 'Se prepara la noche anterior y dura 4 días tapado en la nevera. El maní y el chocolate quedan más crujientes si los pones el mismo día.',
+    con: 'Un café o un vaso de leche. Si no hay maní, sirven almendras o nueces.',
+  },
+
   // ───────────── Salsas y aderezos (no pican) ─────────────
   // Cantidades para 4 porciones; una porción son unas 3 o 4 cucharadas.
   {
