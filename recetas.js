@@ -919,7 +919,7 @@ const RECETAS = [
   },
 
   {
-    id: 'batido-sandia', o: 'fb', vu: 'https://www.cheffatty.com/recipes/watermelon-milkshake', de: 'Chef Fatty (Charles Kim)', ingles: true,
+    id: 'batido-sandia', o: 'fb', vu: 'https://www.cheffatty.com/recipes/watermelon-milkshake', de: 'Chef Fatty (Charles Kim)', ingles: true, foto: 'fotos/batido-sandia.jpg',
     n: 'Batido cremoso de sandía y limón', e: '🍉',
     m: ['postre'], p: 'lacteo', a: ['licuadora'], t: 10, reposo: 'congelar la sandía desde la noche anterior', d: 'Fácil', kcal: 230, prot: 5,
     ing: [
