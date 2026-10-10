@@ -1295,7 +1295,6 @@ const IDEAS_CASA = [
   { id: 'casa-pescado', n: 'Pescado con patacones', art: 'un pescado con patacones', e: '🐟', m: ['almuerzo', 'comida'], p: 'pescado' },
   { id: 'casa-albondigas', n: 'Albóndigas en salsa', art: 'unas albóndigas en salsa', e: '🍝', m: ['almuerzo', 'comida'], p: 'res' },
   { id: 'casa-desmechada', n: 'Carne desmechada', art: 'una carne desmechada', e: '🥩', m: ['almuerzo', 'comida'], p: 'res' },
-  { id: 'casa-higado', n: 'Hígado encebollado', art: 'un hígado encebollado', e: '🥘', m: ['almuerzo', 'comida'], p: 'res' },
   { id: 'casa-cerdo', n: 'Lomito de cerdo a la plancha', art: 'un lomito de cerdo a la plancha', e: '🐖', m: ['almuerzo', 'comida'], p: 'cerdo' },
   { id: 'casa-atun', n: 'Ensalada de atún', art: 'una ensalada de atún', e: '🐟', m: ['almuerzo', 'comida'], p: 'pescado' },
   { id: 'casa-crema', n: 'Crema de ahuyama con pollo', art: 'una crema de ahuyama con pollo', e: '🎃', m: ['comida'], p: 'pollo' },
