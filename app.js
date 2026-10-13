@@ -2,7 +2,7 @@
 /* ¿Qué cocino hoy? — recetas, menú de la semana y lista de mercado.
    Todo se guarda en el celular (localStorage); no hay servidor ni cuentas. */
 
-const VERSION = '1.19';
+const VERSION = '1.20';
 const CLAVE = 'que-cocino-hoy-v1';
 
 const MOMENTOS = {
@@ -104,6 +104,8 @@ const DEF = {
   casa: [],     // chips marcados en "¿Qué tengo en casa?"
   mercado: { semana: '', marcado: {}, extra: [] },
   nuevo: { fecha: '', id: '' },
+  // Compra grande: periodo largo, recetas escogidas por grupo y lo ya marcado en la lista
+  mes: { modo: 'sem', dias: 20, sel: { desayuno: {}, principal: {}, bebida: {}, salsa: {}, postre: {} }, marcado: {} },
 };
 
 const IDEAS = IDEAS_CASA.map(i => Object.assign({ casa: true, a: [], ing: [], pasos: [] }, i));
@@ -434,34 +436,31 @@ function ideaNueva(excluir = []) {
 
 /* ───────────── Lista de mercado ───────────── */
 
-function listaMercado(desde, hasta) {
-  const items = {};
-  for (let f = desde; f <= hasta; f = sumar(f, 1)) {
-    const dia = S.plan[f];
-    if (!dia) continue;
-    for (const s of slots()) {
-      const r = R[dia[s]];
-      if (!r) continue;
-      if (r.casa) {
-        // Platos de la casa: no tienen ingredientes aquí, solo un recordatorio
-        const clave = `casa|${r.id}`;
-        items[clave] = { clave, sing: `${r.n} (lo de siempre)`, plur: '', u: 'gusto', p: 'casa', q: 0, sinCant: true };
-        continue;
-      }
-      const k = escala(r, S.personas);
-      for (const it of r.ing) {
-        if (it.length === 1) continue;
-        const [q, u, nombre, pasillo] = it;
-        const [sing, plur] = nombres(nombre);
-        const p = pasillo === 'sob' ? 'bas' : pasillo;
-        // Cucharadas de algo (jengibre, Maizena…) no se compran por cucharadas: solo el nombre
-        const sinCant = p === 'sal' || p === 'bas' || q == null || u === 'gusto' || u === 'cda' || u === 'cdta';
-        const clave = `${p}|${norm(sing)}|${sinCant ? '' : u}`;
-        const item = items[clave] || (items[clave] = { clave, sing, plur, u, p, q: 0, sinCant });
-        if (!sinCant) item.q += q * k;
-      }
-    }
+// Suma los ingredientes de una receta a `items`. k = cuántas "tandas de 4 porciones" se cocinan.
+function sumarReceta(items, r, k) {
+  if (r.casa) {
+    // Platos de la casa: no tienen ingredientes aquí, solo un recordatorio
+    const clave = `casa|${r.id}`;
+    items[clave] = { clave, sing: `${r.n} (lo de siempre)`, plur: '', u: 'gusto', p: 'casa', q: 0, sinCant: true };
+    return;
   }
+  for (const it of r.ing) {
+    if (it.length === 1) continue;
+    const [q, u, nombre, pasillo] = it;
+    const [sing, plur] = nombres(nombre);
+    const p = pasillo === 'sob' ? 'bas' : pasillo;
+    // Cucharadas de algo (jengibre, Maizena…) no se compran por cucharadas: solo el nombre
+    const sinCant = p === 'sal' || p === 'bas' || q == null || u === 'gusto' || u === 'cda' || u === 'cdta';
+    // Lo que se compra sin cantidad se junta por nombre aunque la receta lo escriba con otra aclaración entre paréntesis
+    const base = sinCant ? sing.replace(/\s*\(.*?\)\s*/g, ' ').trim() : sing;
+    const clave = `${p}|${norm(base)}|${sinCant ? '' : u}`;
+    const item = items[clave] || (items[clave] = { clave, sing, plur, u, p, q: 0, sinCant });
+    if (!sinCant) item.q += q * k;
+  }
+}
+
+// Convierte los ingredientes sumados en grupos por pasillo, con su texto y ordenados.
+function agruparItems(items) {
   const grupos = {};
   for (const it of Object.values(items)) {
     it.texto = textoMercado(it);
@@ -469,6 +468,19 @@ function listaMercado(desde, hasta) {
   }
   for (const g of Object.values(grupos)) g.sort((a, b) => a.sing.localeCompare(b.sing, 'es'));
   return grupos;
+}
+
+function listaMercado(desde, hasta) {
+  const items = {};
+  for (let f = desde; f <= hasta; f = sumar(f, 1)) {
+    const dia = S.plan[f];
+    if (!dia) continue;
+    for (const s of slots()) {
+      const r = R[dia[s]];
+      if (r) sumarReceta(items, r, escala(r, S.personas));
+    }
+  }
+  return agruparItems(items);
 }
 
 function textoMercado(it) {
@@ -669,13 +681,14 @@ function vistaSemana() {
 }
 
 function vistaMercado() {
+  if (S.mes.modo === 'grande') return vistaCompraGrande();
   const lunes = semanaVista;
   const actual = lunes === lunesDe(hoy());
   if (actual) asegurarSemana(lunes);
   const [desde, hasta] = rangoMercado();
   if (S.mercado.semana !== lunes) S.mercado = { semana: lunes, marcado: {}, extra: S.mercado.extra || [] };
 
-  let html = `<div class="semana-nav">
+  let html = toggleModoMercado() + `<div class="semana-nav">
     <button class="btn" data-act="semana" data-d="-7" ${actual ? 'disabled' : ''} aria-label="Semana anterior">◀</button>
     <div><b>🛒 Mercado</b><span class="meta">Para el menú del ${rango(desde, hasta)}</span></div>
     <button class="btn" data-act="semana" data-d="7" aria-label="Semana siguiente">▶</button>
@@ -1524,6 +1537,9 @@ document.addEventListener('change', e => {
   const d = el.dataset;
   if (d.cambio === 'marcar') {
     if (el.checked) S.mercado.marcado[d.k] = true; else delete S.mercado.marcado[d.k];
+    el.closest('.item').classList.toggle('hecho', el.checked);
+  } else if (d.cambio === 'mesMarca') {
+    if (el.checked) S.mes.marcado[d.k] = true; else delete S.mes.marcado[d.k];
     el.closest('.item').classList.toggle('hecho', el.checked);
   } else if (d.cambio === 'extra') {
     S.mercado.extra[+d.i].ok = el.checked;

@@ -175,6 +175,14 @@ button, input { font: inherit; color: inherit; }
 .contador b { font-size: 1.6rem; }
 .segmentos { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin-top: .6rem; }
 .segmentos .btn { font-size: .85rem; min-height: 3rem; }
+.segmentos.cuatro { grid-template-columns: repeat(4, 1fr); }
+.modo-mercado { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-bottom: 1rem; }
+.modo-mercado .btn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.grupo-mes { margin: 1.1rem 0 .3rem; display: flex; justify-content: space-between; align-items: baseline; gap: .6rem; }
+.grupo-mes h3 { margin: 0; }
+.grupo-mes .cuenta { font-size: .82rem; font-weight: 700; color: var(--muted); white-space: nowrap; }
+.grupo-mes .cuenta.ok { color: var(--ok); }
+.item small.total { color: var(--muted); }
 .segmentos .btn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
 .persona-dieta { display: grid; grid-template-columns: 1fr auto; gap: .8rem; align-items: center; padding: .5rem 0; border-bottom: 1px solid var(--line); }
 .persona-dieta:last-of-type { border-bottom: 0; }
